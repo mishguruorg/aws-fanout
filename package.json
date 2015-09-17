@@ -1,0 +1,39 @@
+{
+  "name": "@mishguru/quevents",
+  "version": "1.0.0",
+  "description": "A store for the setup and usage of Mish Guru's queues and notifications from SQS and SNS",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register --recursive specs && standard",
+    "prepublish": "rm -rf dist && babel --optional runtime lib --out-dir dist --copy-files",
+    "postpublish": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mishguruorg/quevents"
+  },
+  "keywords": ["SQS SNS"],
+  "author": "Mish Guru <dev@mish.guru>",
+  "bugs": {
+    "url": "https://github.com/mishguruorg/quevents/issues"
+  },
+  "dependencies": {
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.0",
+    "chai": "^3.2.0",
+    "istanbul": "^0.3.19",
+    "mocha": "^2.2.5",
+    "standard": "^5.1.1",
+    "winston": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-runtime": "^5.8.20",
+    "bluebird": "^2.9.34"
+  },
+  "standard": {
+    "ignore": [
+      "dist"
+    ],
+    "parser": "babel-eslint"
+  }
+}
