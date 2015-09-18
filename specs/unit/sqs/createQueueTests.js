@@ -9,14 +9,15 @@ describe('when I create a queue on aws', () => {
     ResponseMetadata: {
       RequestId: 'a guid'
     },
-    QueueArn: 'an arn'
+    QueueUrl: 'a url'
   }
 
   before(() => mockCreateQueue(expectedResultFromCreateQueue))
-  it('it should accept my credentials and create a queue', done => {
-    createQueue('us-west-2', 'AKIAIPYGFNCRIRVAXIAA', '/mB4/lMeO4FRNPY8GoRvDyDb+4NK6qg/XmokXsOX', 'thisIsATestQueue')
+  it('it should accept my credentials and create a queue', function (done) {
+    this.timeout(5000)
+    createQueue('us-west-2', 'AKIAIPYGFNCRIRVAXIAA', '/mB4/lMeO4FRNPY8GoRvDyDb+4NK6qg/XmokXsOX', 'queueName')
       .then(res => {
-        expect(res.QueueArn).to.be.eq(expectedResultFromCreateQueue.QueueArn)
+        expect(res.QueueUrl).to.be.eq(expectedResultFromCreateQueue.QueueUrl)
         done()
       })
       .catch(done)
