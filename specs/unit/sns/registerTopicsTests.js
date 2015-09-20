@@ -7,7 +7,13 @@ describe('when I register a list of topics', () => {
   it('I should get a promise back with a list of all responses', done => {
     const mockedEntry = mockCreateTopicForEntry()
 
-    mockedEntry.registerTopics('region', 'accessKey', 'secret', [
+    const credentials = {
+      region: 'us-west-2',
+      accessKeyId: 'AKIAIPYGFNCRIRVAXIAA',
+      secretAccessKey: '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'
+    }
+
+    mockedEntry.registerTopics(credentials, [
       'this is a topic',
       'this is another topic'
     ])

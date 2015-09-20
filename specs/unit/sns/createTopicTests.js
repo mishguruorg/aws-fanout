@@ -12,9 +12,15 @@ describe('when I create a topic on aws', () => {
     TopicArn: 'an arn'
   }
 
+  const credentials = {
+    region: 'us-west-2',
+    accessKeyId: 'AKIAIPYGFNCRIRVAXIAA',
+    secretAccessKey: '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'
+  }
+
   before(() => mockCreateTopic(expectedResultFromCreateTopic))
   it('it should accept my credentials and create a topic', done => {
-    createTopic('us-west-2', 'AKIAIPYGFNCRIRVAXIAA', '/mB4/lMeO4FRNPY8GoRvDyDb+4NK6qg/XmokXsOX', 'thisIsATestTopic')
+    createTopic(credentials, 'thisIsATestTopic')
       .then(res => {
         expect(res.TopicArn).to.be.eq(expectedResultFromCreateTopic.TopicArn)
         done()
