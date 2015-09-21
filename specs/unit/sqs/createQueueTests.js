@@ -3,21 +3,16 @@ import sinon from 'sinon'
 import { expect } from 'chai'
 import AWS from 'aws-sdk'
 import createQueue from '../../../lib/sqs/createQueue'
+import createQueueResponse from '../../responses/createQueue'
+import getCredentials from '../../helpers/getCredentials'
 
 describe('when I create a queue on aws', () => {
-  const expectedResultFromCreateQueue = {
-    ResponseMetadata: {
-      RequestId: 'a guid'
-    },
-    QueueUrl: 'a url'
-  }
-
-  before(() => mockCreateQueue(expectedResultFromCreateQueue))
+  before(() => mockCreateQueue(createQueueResponse))
   it('it should accept my credentials and create a queue', function (done) {
     this.timeout(5000)
-    createQueue('us-west-2', 'AKIAIPYGFNCRIRVAXIAA', '/mB4/lMeO4FRNPY8GoRvDyDb+4NK6qg/XmokXsOX', 'queueName')
+    createQueue(getCredentials(), 'thisIsATestQueue')
       .then(res => {
-        expect(res.QueueUrl).to.be.eq(expectedResultFromCreateQueue.QueueUrl)
+        expect(res.QueueUrl).to.be.eq(createQueueResponse.QueueUrl)
         done()
       })
       .catch(done)

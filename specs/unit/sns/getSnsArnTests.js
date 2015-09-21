@@ -1,34 +1,22 @@
-/* global before, describe, it, after */
+/* global describe, it */
 import proxyquire from 'proxyquire'
 import { expect } from 'chai'
-import AWS from 'aws-sdk'
+import createTopicResult from '../../responses/createTopic'
+import getCredentials from '../../helpers/getCredentials'
 
-const getLibraryWithMock = createTopicResult => (
+const getLibraryWithMock = createTopicResultMock => (
   proxyquire('../../../lib/sns/getSnsArn', {
-    '../sns/createTopic': () => Promise.resolve(createTopicResult)
+    '../sns/createTopic': () => Promise.resolve(createTopicResultMock)
   })
 )
 
 describe('when I get an arn for a topic', () => {
-  const createTopicMock = {
-    ResponseMetadata: {
-      RequestId: 'a guid'
-    },
-    TopicArn: 'Ahll be bahck'
-  }
-
-  const getArn = getLibraryWithMock(createTopicMock)
-
-  const credentials = {
-    region: 'us-west-2',
-    accessKeyId: 'AKIAIPYGFNCRIRVAXIAA',
-    secretAccessKey: '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'
-  }
+  const getArn = getLibraryWithMock(createTopicResult)
 
   it('it should accept my credentials and return me an arn', done => {
-    getArn(credentials, 'thisIsATestTopic')
+    getArn(getCredentials(), 'thisIsATestTopic')
       .then(res => {
-        expect(res).to.be.eq(createTopicMock.TopicArn)
+        expect(res).to.be.eq(createTopicResult.TopicArn)
         done()
       })
       .catch(done)

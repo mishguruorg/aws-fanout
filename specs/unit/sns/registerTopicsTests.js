@@ -2,18 +2,14 @@
 import { expect } from 'chai'
 import proxyquire from 'proxyquire'
 import Promise from 'bluebird'
+import createTopicResult from '../../responses/createTopic'
+import getCredentials from '../../helpers/getCredentials'
 
 describe('when I register a list of topics', () => {
   it('I should get a promise back with a list of all responses', done => {
     const mockedEntry = mockCreateTopicForEntry()
 
-    const credentials = {
-      region: 'us-west-2',
-      accessKeyId: 'AKIAIPYGFNCRIRVAXIAA',
-      secretAccessKey: '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'
-    }
-
-    mockedEntry.registerTopics(credentials, [
+    mockedEntry.registerTopics(getCredentials(), [
       'this is a topic',
       'this is another topic'
     ])
@@ -27,6 +23,6 @@ describe('when I register a list of topics', () => {
 
 const mockCreateTopicForEntry = () => {
   return proxyquire('../../../lib/', {
-    './sns/createTopic': (region, accessKey, secret, topic) => Promise.resolve('success')
+    './sns/createTopic': (credentials, topic) => Promise.resolve(createTopicResult)
   })
 }

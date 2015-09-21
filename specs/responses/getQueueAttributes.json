@@ -1,0 +1,8 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "a guid"
+  },
+  "Attributes": {
+    "QueueArn": "an arn"
+  }
+}

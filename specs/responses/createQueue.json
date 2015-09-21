@@ -1,0 +1,6 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "a guid"
+  },
+  "QueueUrl": "a url"
+}
