@@ -15,7 +15,7 @@ describe('When I create a subscription on an sns Topic', () => {
     mockSns(createTopicResponse, subscribeToSnsResponse, getQueueAttributesResponse)
   })
   it('it should respond with a request Id', function (done) {
-    this.timeout(30000)
+    this.timeout(10000)
 
     createSubscription(getCredentials, 'thisIsATestTopic', 'thisIsATestQueue')
       .then(res => {
