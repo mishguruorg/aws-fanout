@@ -6,7 +6,7 @@ import getQueueAttributesResult from '../../responses/getQueueAttributes'
 import getCredentials from '../../helpers/getCredentials'
 
 const getLibraryWithMock = (createQueueRes, getQueueAttrRes) => (
-  proxyquire('../../../lib/sqs/getQueueInfo', {
+  proxyquire.noPreserveCache().noCallThru()('../../../lib/sqs/getQueueInfo', {
     './createQueue': () => Promise.resolve(createQueueRes),
     './getQueueArn': () => Promise.resolve(getQueueAttrRes)
   })

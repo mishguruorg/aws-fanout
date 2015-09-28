@@ -22,7 +22,7 @@ describe('when I register a list of topics', () => {
 })
 
 const mockCreateTopicForEntry = () => {
-  return proxyquire('../../../lib/', {
+  return proxyquire.noPreserveCache().noCallThru()('../../../lib/', {
     './sns/createTopic': (credentials, topic) => Promise.resolve(createTopicResult)
   })
 }

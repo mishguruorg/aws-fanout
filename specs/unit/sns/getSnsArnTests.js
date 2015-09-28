@@ -5,7 +5,7 @@ import createTopicResult from '../../responses/createTopic'
 import getCredentials from '../../helpers/getCredentials'
 
 const getLibraryWithMock = createTopicResultMock => (
-  proxyquire('../../../lib/sns/getSnsArn', {
+  proxyquire.noPreserveCache().noCallThru()('../../../lib/sns/getSnsArn', {
     '../sns/createTopic': () => Promise.resolve(createTopicResultMock)
   })
 )
