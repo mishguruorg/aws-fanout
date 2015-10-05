@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mishguruorg/quevents"
+    "url": "git+https://github.com/mishguruorg/aws-fanout"
   },
   "keywords": [
     "SQS SNS"
   ],
   "author": "Mish Guru <dev@mish.guru>",
   "bugs": {
-    "url": "https://github.com/mishguruorg/quevents/issues"
+    "url": "https://github.com/mishguruorg/aws-fanout/issues"
   },
   "dependencies": {
     "aws-sdk": "^2.2.3",
