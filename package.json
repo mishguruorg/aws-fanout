@@ -1,7 +1,7 @@
 {
-  "name": "@mishguru/quevents",
+  "name": "aws-fanout",
   "version": "1.0.0",
-  "description": "A store for the setup and usage of Mish Guru's queues and notifications from SQS and SNS",
+  "description": "A library wrapping SNS and SQS to allow for human readable names when using a fanout technique",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register --recursive specs && standard",

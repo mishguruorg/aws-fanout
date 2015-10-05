@@ -1,17 +1,17 @@
-# quevents
+# AWS-Fanout 
 
-A store for the setup and usage of Mish Guru's queues and notifications from SQS and SNS
+A library wrapping SNS and SQS to allow for human readable names when using a fanout technique
 
 ## Installation
 
 This module is installed via npm:
 
 ``` bash
-$ npm install quevents
+$ npm install aws-fanout
 ```
 
 ## Example Usage
 
 ``` js
-var quevents = require('quevents');
+var quevents = require('aws-fanout');
 ```
