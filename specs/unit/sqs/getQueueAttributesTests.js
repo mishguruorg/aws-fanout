@@ -1,17 +1,17 @@
-/* global before, describe, it, after */
+/* global beforeEach, describe, it, afterEach */
 import sinon from 'sinon'
 import { expect } from 'chai'
 import AWS from 'aws-sdk'
-import getQueueArn from '../../../lib/sqs/getQueueArn'
+import getQueueAttributes from '../../../lib/sqs/getQueueAttributes'
 import getArnResult from '../../responses/getQueueAttributes'
 import getCredentials from '../../helpers/getCredentials'
 
 describe('when I get an ARN for a queue', () => {
-  before(() => mockGetArn(getArnResult))
+  beforeEach(() => mockGetArn(getArnResult))
 
   it('it should return me an arn for that queue', function (done) {
     this.timeout(5000)
-    getQueueArn(getCredentials(), 'this is a queue url')
+    getQueueAttributes(getCredentials(), 'this is a queue url')
       .then(res => {
         expect(res.Attributes.QueueArn).to.be.eq(getArnResult.Attributes.QueueArn)
         done()
@@ -19,7 +19,7 @@ describe('when I get an ARN for a queue', () => {
       .catch(done)
   })
 
-  after(() => restoreGetArn())
+  afterEach(() => restoreGetArn())
 })
 
 const mockGetArn = res => {

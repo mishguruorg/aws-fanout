@@ -1,4 +1,4 @@
-/* global describe, it, before, after */
+/* global describe, it, beforeEach, afterEach */
 import getCredentials from '../../helpers/getCredentials'
 import { expect } from 'chai'
 import proxyquire from 'proxyquire'
@@ -10,7 +10,7 @@ import sinon from 'sinon'
 import AWS from 'aws-sdk'
 
 describe('when I set permissions for a queue', () => {
-  before(() => {
+  beforeEach(() => {
     createMockQueueAttr(createQueueRes.QueueUrl, setQueueAttributesRes)
   })
 
@@ -26,7 +26,7 @@ describe('when I set permissions for a queue', () => {
       .catch(done)
   })
 
-  after(() => {
+  afterEach(() => {
     restoreMockQueueAttr()
   })
 })

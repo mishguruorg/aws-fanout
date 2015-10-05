@@ -8,15 +8,16 @@ import getCredentials from '../../helpers/getCredentials'
 const getLibraryWithMock = (createQueueRes, getQueueAttrRes) => (
   proxyquire.noPreserveCache().noCallThru()('../../../lib/sqs/getQueueInfo', {
     './createQueue': () => Promise.resolve(createQueueRes),
-    './getQueueArn': () => Promise.resolve(getQueueAttrRes)
+    './getQueueAttributes': () => Promise.resolve(getQueueAttrRes)
   })
 )
 
-describe('when I get an arn for a topic', () => {
+describe('when I get info for a queue', () => {
   const getQueueInfo = getLibraryWithMock(createQueueResult, getQueueAttributesResult)
 
-  it('it should accept my credentials and return me an arn', done => {
-    getQueueInfo.getAllSqsInfo(getCredentials(), 'thisIsATestTopic')
+  it('it should accept my credentials and return me queue info', function (done) {
+    this.timeout(10000)
+    getQueueInfo.getAllSqsInfo(getCredentials(), 'thisIsATestQueue')
       .then(res => {
         expect(res.url).to.be.eq(createQueueResult.QueueUrl, getQueueAttributesResult.Attributes.QueueArn)
         done()

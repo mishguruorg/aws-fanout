@@ -1,4 +1,4 @@
-/* global before, describe, it, after */
+/* global beforeEach, describe, it, afterEach */
 import sinon from 'sinon'
 import { expect } from 'chai'
 import AWS from 'aws-sdk'
@@ -7,7 +7,7 @@ import createQueueResponse from '../../responses/createQueue'
 import getCredentials from '../../helpers/getCredentials'
 
 describe('when I create a queue on aws', () => {
-  before(() => mockCreateQueue(createQueueResponse))
+  beforeEach(() => mockCreateQueue(createQueueResponse))
   it('it should accept my credentials and create a queue', function (done) {
     this.timeout(5000)
     createQueue(getCredentials(), 'thisIsATestQueue')
@@ -17,7 +17,7 @@ describe('when I create a queue on aws', () => {
       })
       .catch(done)
   })
-  after(() => restoreCreateQueue())
+  afterEach(() => restoreCreateQueue())
 })
 
 const mockCreateQueue = res => {
