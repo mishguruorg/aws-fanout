@@ -16,9 +16,9 @@ describe('when I set permissions for a queue', () => {
 
   it('It should give my SNS topic permissions to write to that queue', function (done) {
     this.timeout(10000)
-    const setQueuePermissions = getLibraryWithMock(createTopicRes.TopicArn, createQueueRes.QueueUrl, getQueueAttrRes.Attributes.QueueArn)
+    const setQueuePermissions = getLibraryWithMock(createTopicRes.TopicArn, createQueueRes.QueueUrl, getQueueAttrRes.Attributes.QueueArn, getQueueAttrRes)
 
-    setQueuePermissions(getCredentials(), 'thisIsATestTopic', 'thisIsATestQueue')
+    setQueuePermissions(getCredentials(), ['thisIsATestTopic'], 'thisIsATestQueue')
       .then(res => {
         expect(res).to.be.eq(setQueueAttributesRes)
         done()
@@ -31,7 +31,7 @@ describe('when I set permissions for a queue', () => {
   })
 })
 
-const getLibraryWithMock = (topicArn, sqsUrl, sqsArn) => (
+const getLibraryWithMock = (topicArn, sqsUrl, sqsArn, queueAttributes) => (
   proxyquire.noPreserveCache().noCallThru()('../../../lib/sqs/setQueuePermissions', {
     '../sns/getSnsArn': () => Promise.resolve(topicArn),
     './getQueueInfo': {
@@ -39,7 +39,8 @@ const getLibraryWithMock = (topicArn, sqsUrl, sqsArn) => (
         url: sqsUrl,
         arn: sqsArn
       })
-    }
+    },
+    './getQueueAttributes': () => Promise.resolve(queueAttributes)
   })
 )
 

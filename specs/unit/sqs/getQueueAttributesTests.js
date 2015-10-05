@@ -6,12 +6,12 @@ import getQueueAttributes from '../../../lib/sqs/getQueueAttributes'
 import getArnResult from '../../responses/getQueueAttributes'
 import getCredentials from '../../helpers/getCredentials'
 
-describe('when I get an ARN for a queue', () => {
+describe('when I get attributes for a Queue', () => {
   beforeEach(() => mockGetArn(getArnResult))
 
-  it('it should return me an arn for that queue', function (done) {
+  it('it should return me all attributes for that queue', function (done) {
     this.timeout(5000)
-    getQueueAttributes(getCredentials(), 'this is a queue url')
+    getQueueAttributes(getCredentials(), 'https://sqs.us-west-2.amazonaws.com/488075936769/thisIsATestQueue')
       .then(res => {
         expect(res.Attributes.QueueArn).to.be.eq(getArnResult.Attributes.QueueArn)
         done()

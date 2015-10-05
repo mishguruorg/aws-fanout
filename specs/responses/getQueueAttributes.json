@@ -1,8 +1,19 @@
 {
-  "ResponseMetadata": {
-    "RequestId": "a guid"
-  },
-  "Attributes": {
-    "QueueArn": "an arn"
-  }
+   "ResponseMetadata": {
+      "RequestId": "b6e957c2-dd9f-544b-b193-194e358ea61e"
+   },
+   "Attributes": {
+      "QueueArn": "arn:aws:sqs:us-west-2:488075936769:thisIsATestQueue",
+      "ApproximateNumberOfMessages": "0",
+      "ApproximateNumberOfMessagesNotVisible": "0",
+      "ApproximateNumberOfMessagesDelayed": "0",
+      "CreatedTimestamp": "1442548007",
+      "LastModifiedTimestamp": "1444079012",
+      "VisibilityTimeout": "30",
+      "MaximumMessageSize": "262144",
+      "MessageRetentionPeriod": "345600",
+      "DelaySeconds": "0",
+      "Policy": "{\"Version\":\"2012-10-17\",\"Id\":\"arn:aws:sqs:us-west-2:488075936769:thisIsATestQueue/SQSDefaultPolicy\",\"Statement\":[{\"Sid\":\"Sid1444079011184\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"SQS:SendMessage\",\"Resource\":\"arn:aws:sqs:us-west-2:488075936769:thisIsATestQueue\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:sns:us-west-2:488075936769:thisIsATestTopic\"}}}]}",
+      "ReceiveMessageWaitTimeSeconds": "0"
+   }
 }
