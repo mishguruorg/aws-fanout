@@ -19,21 +19,21 @@
   "bugs": {
     "url": "https://github.com/mishguruorg/aws-fanout/issues"
   },
-  "dependencies": {
-    "aws-sdk": "^2.2.3",
+  "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.0",
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
     "proxyquire": "^1.7.2",
-    "ramda": "^0.17.1",
     "standard": "^5.1.1",
-    "winston": "^1.0.0"
+    "winston": "^1.0.0",
+    "sinon": "^1.16.1"
   },
-  "devDependencies": {
+  "dependencies": {
+    "aws-sdk": "^2.2.3",
     "babel-runtime": "^5.8.20",
     "bluebird": "^2.9.34",
-    "sinon": "^1.16.1"
+    "ramda": "^0.17.1"
   },
   "standard": {
     "ignore": [
