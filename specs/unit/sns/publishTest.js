@@ -16,7 +16,10 @@ describe('When I publish to an SNS Topic', () => {
     this.timeout(8000)
 
     publish(getCredentials(), 'thisIsATestTopic', {
-      default: 'I am a default message'
+      default: 'I am a default message',
+      foo: 'This is a foo',
+      bar: 9,
+      moreThings: 'Here are some more things'
     })
       .then(res => {
         expect(res.MessageId).to.be.eq(publishRes.MessageId)
