@@ -1,8 +1,8 @@
 const getCredentials = () => {
   return {
-    region: 'fpdosf2',
-    accessKeyId: 'fooA',
-    secretAccessKey: 'bar'
+    region: process.env.AWS_REGION || 'fake-region',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'fake-key',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'fake-secret'
   }
 }
 
