@@ -28,6 +28,31 @@ describe('When I publish to an SNS Topic', () => {
       .catch(done)
   })
 
+  it('I should get an error if it is a circular dependency', function (done) {
+    this.timeout(8000)
+
+    let messageJson = {
+      default: 'I am a default message',
+      foo: 'This is a foo',
+      bar: 9,
+      moreThings: 'Here are some more things'
+    }
+    messageJson.sphere = messageJson
+
+    publish(getCredentials(), 'thisIsATestTopic', messageJson)
+      .then(() => {
+        done(new Error('Should have thrown a circular dependency error'))
+      })
+      .catch(err => {
+        console.log(err)
+        if (err.toString().indexOf('Circular') > -1) {
+          done()
+        } else {
+          done(err)
+        }
+      })
+  })
+
   afterEach(() => {
     restorePublish()
   })
