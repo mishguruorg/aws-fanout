@@ -18,7 +18,7 @@ describe('when I set permissions for a queue', () => {
     this.timeout(10000)
     const setQueuePermissions = getLibraryWithMock(createTopicRes.TopicArn, createQueueRes.QueueUrl, getQueueAttrRes.Attributes.QueueArn, getQueueAttrRes)
 
-    setQueuePermissions(getCredentials(), ['thisIsATestTopic'], 'thisIsATestQueue')
+    setQueuePermissions(getCredentials(), ['thisIsATestTopic'], 'thisIsATestQueue', 'thisIsADeadLetterQueue')
       .then(res => {
         expect(res).to.be.eq(setQueueAttributesRes)
         done()
