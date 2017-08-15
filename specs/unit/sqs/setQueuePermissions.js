@@ -41,7 +41,7 @@ const getLibraryWithMock = (topicArn, sqsUrl, sqsArn, queueAttributes) => (
       })
     },
     './getQueueAttributes': () => Promise.resolve(queueAttributes)
-  })
+  }).default
 )
 
 const createMockQueueAttr = (queueUrl, res) => {
