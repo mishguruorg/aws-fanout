@@ -3,9 +3,13 @@
   "version": "1.2.2",
   "description": "A library wrapping SNS and SQS to allow for human readable names when using a fanout technique",
   "main": "dist/index.js",
+  "srcPath": "lib",
   "scripts": {
-    "test": "mocha --compilers js:babel/register --recursive specs && standard",
-    "prepublish": "rm -rf dist && babel --optional runtime lib --out-dir dist --copy-files",
+    "build": "pkg-build",
+    "flow": "pkg-flow",
+    "lint": "pkg-lint",
+    "test": "mocha --compilers js:babel-register --recursive specs && standard",
+    "prepublish": "rm -rf dist && pkg-build",
     "postpublish": "rm -rf dist"
   },
   "repository": {
@@ -20,24 +24,36 @@
     "url": "https://github.com/mishguruorg/aws-fanout/issues"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
-    "babel-eslint": "^4.1.3",
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
     "proxyquire": "^1.7.2",
-    "sinon": "^1.16.1",
-    "standard": "^5.3.1"
+    "sinon": "^1.16.1"
   },
   "dependencies": {
+    "@mishguru/package": "^1.8.5",
     "aws-sdk": "^2.2.3",
-    "babel-runtime": "^5.8.20",
     "bluebird": "^2.9.34",
     "ramda": "^0.17.1"
   },
-  "standard": {
-    "ignore": [
-      "dist"
+  "babel": {
+    "presets": [
+      "flow",
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
     ],
-    "parser": "babel-eslint"
+    "plugins": [
+      [
+        "transform-object-rest-spread",
+        {
+          "useBuiltIns": true
+        }
+      ]
+    ]
   }
 }
