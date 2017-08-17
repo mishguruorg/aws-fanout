@@ -6,6 +6,7 @@ import setQueueAttributesRes from '../../responses/setQueueAttributes.json'
 import createQueueRes from '../../responses/createQueue.json'
 import getQueueAttrRes from '../../responses/getQueueAttributes.json'
 import createTopicRes from '../../responses/createTopic.json'
+// import setQueuePermissions from '../../../lib/sqs/setQueuePermissions'
 import sinon from 'sinon'
 import AWS from 'aws-sdk'
 
@@ -16,9 +17,13 @@ describe('when I set permissions for a queue', () => {
 
   it('It should give my SNS topic permissions to write to that queue', function (done) {
     this.timeout(10000)
-    const setQueuePermissions = getLibraryWithMock(createTopicRes.TopicArn, createQueueRes.QueueUrl, getQueueAttrRes.Attributes.QueueArn, getQueueAttrRes)
+    const dumbQueueInfo = {
+      url: createQueueRes.QueueUrl,
+      arn: getQueueAttrRes.Attributes.QueueArn
+    }
+    const setQueuePermissions = getLibraryWithMock()
 
-    setQueuePermissions(getCredentials(), ['thisIsATestTopic'], 'thisIsATestQueue', 'thisIsADeadLetterQueue')
+    setQueuePermissions(getCredentials(), ['thisIs:an:arn:10000-but-a-test-one'], dumbQueueInfo, 'thisIsADeadLetterQueue')
       .then(res => {
         expect(res).to.be.eq(setQueueAttributesRes)
         done()
@@ -31,16 +36,14 @@ describe('when I set permissions for a queue', () => {
   })
 })
 
-const getLibraryWithMock = (topicArn, sqsUrl, sqsArn, queueAttributes) => (
+const getLibraryWithMock = () => (
   proxyquire.noPreserveCache().noCallThru()('../../../lib/sqs/setQueuePermissions', {
-    '../sns/getSnsArn': () => Promise.resolve(topicArn),
     './getQueueInfo': {
       getAllSqsInfo: () => Promise.resolve({
-        url: sqsUrl,
-        arn: sqsArn
+        url: 'deadletter url',
+        arn: 'arn::deadletter'
       })
-    },
-    './getQueueAttributes': () => Promise.resolve(queueAttributes)
+    }
   }).default
 )
 
