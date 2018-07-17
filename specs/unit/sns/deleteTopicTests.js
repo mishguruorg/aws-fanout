@@ -24,7 +24,7 @@ describe('deleteTopic()', () => {
 })
 
 const mockDeleteTopic = res => {
-  sinon.stub(AWS, 'SNS', () => ({
+  sinon.stub(AWS, 'SNS').callsFake(() => ({
     deleteTopic: (config, cb) => {
       cb(null, res)
     }

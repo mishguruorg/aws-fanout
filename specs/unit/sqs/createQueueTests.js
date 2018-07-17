@@ -21,7 +21,7 @@ describe('when I create a queue on aws', () => {
 })
 
 const mockCreateQueue = res => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     createQueue: (config, cb) => {
       cb(null, res)
     }
