@@ -23,7 +23,7 @@ describe('when I get attributes for a Queue', () => {
 })
 
 const mockGetArn = res => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     getQueueAttributes: (config, cb) => {
       cb(null, res)
     }

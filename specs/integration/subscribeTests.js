@@ -33,7 +33,7 @@ describe('When I subscribe to an SNS Topic', () => {
 })
 
 const mockSns = (subres, createTopicRes) => {
-  sinon.stub(AWS, 'SNS', () => ({
+  sinon.stub(AWS, 'SNS').callsFake(() => ({
     subscribe: (config, cb) => {
       cb(null, subres)
     },
@@ -44,7 +44,7 @@ const mockSns = (subres, createTopicRes) => {
 }
 
 const mockSqs = (createQueueRes, getQueueAttrRes) => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     createQueue: (config, cb) => {
       cb(null, createQueueRes)
     },

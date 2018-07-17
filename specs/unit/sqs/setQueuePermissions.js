@@ -48,7 +48,7 @@ const getLibraryWithMock = () => (
 )
 
 const createMockQueueAttr = (queueUrl, res) => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     setQueueAttributes: (config, cb) => {
       if (config.QueueUrl !== queueUrl) {
         throw new Error(`Test Queue Urls do not match ${config.queueUrl} AND ${queueUrl}`)

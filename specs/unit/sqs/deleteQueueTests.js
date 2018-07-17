@@ -24,7 +24,7 @@ describe('deleteQueue()', () => {
 })
 
 const mockSqs = res => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     deleteQueue: (config, cb) => {
       cb(null, res)
     }

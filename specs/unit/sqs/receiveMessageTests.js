@@ -21,7 +21,7 @@ describe('when I receive a queue message on aws', () => {
 })
 
 const mockSqs = res => {
-  sinon.stub(AWS, 'SQS', () => ({
+  sinon.stub(AWS, 'SQS').callsFake(() => ({
     receiveMessage: (config, cb) => {
       cb(null, res)
     }

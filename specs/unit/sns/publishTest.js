@@ -59,7 +59,7 @@ describe('When I publish to an SNS Topic', () => {
 })
 
 const mockPublish = (pubres, createTopicRes) => {
-  sinon.stub(AWS, 'SNS', () => ({
+  sinon.stub(AWS, 'SNS').callsFake(() => ({
     publish: (config, cb) => {
       cb(null, pubres)
     },

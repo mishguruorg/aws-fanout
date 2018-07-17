@@ -22,7 +22,7 @@ describe('when I create a topic on aws', () => {
 })
 
 const mockCreateTopic = res => {
-  sinon.stub(AWS, 'SNS', () => ({
+  sinon.stub(AWS, 'SNS').callsFake(() => ({
     createTopic: (config, cb) => {
       cb(null, res)
     }
