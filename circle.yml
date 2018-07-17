@@ -1,16 +1,14 @@
 machine:
   node:
-    version: 7.9.0
+    version: 10.6.0
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
   override:
-    - yarn
-  cache_directories:
-    - ~/.cache/yarn
+    - npm install
 
 test:
   override:
-    - yarn lint
-    - yarn test
+    - npm run lint
+    - npm run test
