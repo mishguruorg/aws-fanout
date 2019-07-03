@@ -10,6 +10,8 @@
     "build": "pkg-build",
     "flow": "pkg-flow",
     "lint": "pkg-lint",
+    "prepublish": "pkg-build",
+    "postpublish": "git push origin master --tags",
     "test": "mocha --compilers js:@babel/register --recursive specs"
   },
   "repository": {
