@@ -31,11 +31,15 @@ const test = anyTest as TestInterface<{
       c: Credentials,
       t: string[],
       q: string,
+      d?: string,
+      m?: number,
     ) => Promise<void>,
     subscribeQueueTopicsByTheirPrefix: (
       c: Credentials,
       t: string[],
       q: string,
+      d?: string,
+      m?: number,
     ) => Promise<void>,
     publish: (
       c: Credentials,

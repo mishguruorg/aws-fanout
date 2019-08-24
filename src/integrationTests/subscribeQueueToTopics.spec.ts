@@ -70,3 +70,72 @@ test('subscribeQueueToTopics', async (t) => {
     ],
   ])
 })
+
+test('with deadLetterQueueName', async (t) => {
+  const { eventLog, fanout } = t.context
+
+  const queueName = 'queueWithDeadLetterQueue'
+  const topicNames = [t.title]
+  const deadLetterQueueName = 'zombie'
+  const maxReceiveCount = 3
+
+  await fanout.subscribeQueueToTopics(
+    credentials,
+    topicNames,
+    queueName,
+    deadLetterQueueName,
+    maxReceiveCount,
+  )
+
+  t.deepEqual(eventLog, [
+    ['sqs.createQueue', { QueueName: queueName }],
+    [
+      'sqs.getQueueAttributes',
+      { QueueUrl: url(queueName), AttributeNames: ['QueueArn', 'Policy'] },
+    ],
+    ['sns.createTopic', { Name: topicNames[0] }],
+    ['sqs.createQueue', { QueueName: deadLetterQueueName }],
+    [
+      'sqs.getQueueAttributes',
+      { QueueUrl: url(deadLetterQueueName), AttributeNames: ['QueueArn'] },
+    ],
+    [
+      'sqs.setQueueAttributes',
+      {
+        QueueUrl: url(queueName),
+        Attributes: {
+          Policy: JSON.stringify({
+            Version: '2012-10-17',
+            Id: `${arn.sqs(queueName)}/SQSDefaultPolicy`,
+            Statement: [
+              {
+                Sid: 'Sid1234567890123',
+                Effect: 'Allow',
+                Principal: '*',
+                Action: 'SQS:SendMessage',
+                Resource: arn.sqs(queueName),
+                Condition: {
+                  ArnEquals: {
+                    'aws:SourceArn': arn.sns(topicNames[0]),
+                  },
+                },
+              },
+            ],
+          }),
+          RedrivePolicy: JSON.stringify({
+            maxReceiveCount,
+            deadLetterTargetArn: arn.sqs(deadLetterQueueName),
+          }),
+        },
+      },
+    ],
+    [
+      'sns.subscribe',
+      {
+        Protocol: 'sqs',
+        TopicArn: arn.sns(topicNames[0]),
+        Endpoint: arn.sqs(queueName),
+      },
+    ],
+  ])
+})
