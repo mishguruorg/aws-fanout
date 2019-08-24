@@ -6,7 +6,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "prepare": "pkg-build",
+    "precommit": "pkg-precommit",
+    "test": "pkg-test",
     "build": "pkg-build",
     "lint": "pkg-lint",
     "tidy": "pkg-tidy"
@@ -30,13 +31,15 @@
   },
   "devDependencies": {
     "@mishguru/package": "^7.5.0",
-    "sinon": "^7.4.1"
+    "sinon": "^7.4.1",
+    "timekeeper": "2.2.0"
   },
   "dependencies": {
     "aws-sdk": "^2.517.0",
     "bottleneck": "^2.19.5",
     "common-prefix": "^1.1.0",
     "mem": "^5.1.1",
-    "p-progress": "^0.4.1"
+    "p-progress": "^0.4.1",
+    "stu": "3.1.0"
   }
 }
