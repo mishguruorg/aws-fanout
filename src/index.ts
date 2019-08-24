@@ -1,6 +1,5 @@
 import { SQS, SNS } from 'aws-sdk'
 import commonPrefix from 'common-prefix'
-import PProgress from 'p-progress'
 
 import buildQueuePolicy from './buildQueuePolicy'
 
@@ -60,166 +59,126 @@ const receiveMessage = async (
   })
 }
 
-const subscribeQueueToTopics = (
+const subscribeQueueToTopics = async (
   credentials: Credentials,
   topicNames: string[],
   queueName: string,
   deadLetterQueueName?: string,
   maxReceiveCount: number = 5,
 ) => {
-  return new PProgress(async (resolve, reject, progress) => {
-    try {
-      let counter = 0
-      const counterTotal = 3 + topicNames.length * 2
-      const tick = () => {
-        counter += 1
-        progress(counter / counterTotal)
-      }
+  const sqs = new SQS(credentials)
+  const sns = new SNS(credentials)
 
-      const sqs = new SQS(credentials)
-      const sns = new SNS(credentials)
+  const queueUrl = await sdk.createQueue(sqs, queueName)
 
-      const queueUrl = await sdk.createQueue(sqs, queueName)
-      tick()
+  const queueAttributes = await sdk.getQueueAttributes(sqs, queueUrl, [
+    'QueueArn',
+    'Policy',
+  ])
 
-      const queueAttributes = await sdk.getQueueAttributes(sqs, queueUrl, [
-        'QueueArn',
-        'Policy',
-      ])
-      tick()
+  const queueArn = queueAttributes.QueueArn
+  const queuePolicy = queueAttributes.Policy
 
-      const queueArn = queueAttributes.QueueArn
-      const queuePolicy = queueAttributes.Policy
-
-      const existingTopicArns =
-        queuePolicy == null
-          ? []
-          : JSON.parse(queuePolicy)
-            .Statement.filter((item: any) => {
-              return item.Action === 'SQS:SendMessage'
-            })
-            .map((item: any) => {
-              if (
-                item.Condition == null ||
-                  item.Condition.ArnEquals == null
-              ) {
-                return []
-              }
-              return item.Condition.ArnEquals['aws:SourceArn']
-            })
-            .flat()
-
-      const topicArns = await Promise.all(
-        topicNames.map(async (topicName) => {
-          const topicArn = await sdk.createTopic(sns, topicName)
-          tick()
-          return topicArn
-        }),
-      )
-
-      const allTopicArns = [...new Set([...existingTopicArns, ...topicArns])]
-
-      const attributes: SQS.Types.QueueAttributeMap = {
-        Policy: buildQueuePolicy({
-          queueArn,
-          topicArnList: allTopicArns,
-        }),
-      }
-
-      if (deadLetterQueueName != null) {
-        const deadLetterTargetArn = await sdk.getQueueArnByName(
-          sqs,
-          deadLetterQueueName,
-        )
-        attributes.RedrivePolicy = JSON.stringify({
-          maxReceiveCount,
-          deadLetterTargetArn,
+  const existingTopicArns =
+    queuePolicy == null
+      ? []
+      : JSON.parse(queuePolicy)
+        .Statement.filter((item: any) => {
+          return item.Action === 'SQS:SendMessage'
         })
-      }
+        .map((item: any) => {
+          if (item.Condition == null || item.Condition.ArnEquals == null) {
+            return []
+          }
+          return item.Condition.ArnEquals['aws:SourceArn']
+        })
+        .flat()
 
-      await sdk.setQueueAttributes(sqs, queueUrl, attributes)
-      tick()
+  const topicArns = await Promise.all(
+    topicNames.map(async (topicName) => {
+      const topicArn = await sdk.createTopic(sns, topicName)
+      return topicArn
+    }),
+  )
 
-      await Promise.all(
-        topicArns.map(async (topicArn) => {
-          await sdk.subscribeQueueToTopic(sns, {
-            topicArn,
-            queueArn,
-          })
-          tick()
-        }),
-      )
-      resolve()
-    } catch (error) {
-      reject(error)
-    }
-  })
+  const allTopicArns = [...new Set([...existingTopicArns, ...topicArns])]
+
+  const attributes: SQS.Types.QueueAttributeMap = {
+    Policy: buildQueuePolicy({
+      queueArn,
+      topicArnList: allTopicArns,
+    }),
+  }
+
+  if (deadLetterQueueName != null) {
+    const deadLetterTargetArn = await sdk.getQueueArnByName(
+      sqs,
+      deadLetterQueueName,
+    )
+    attributes.RedrivePolicy = JSON.stringify({
+      maxReceiveCount,
+      deadLetterTargetArn,
+    })
+  }
+
+  await sdk.setQueueAttributes(sqs, queueUrl, attributes)
+
+  await Promise.all(
+    topicArns.map(async (topicArn) => {
+      await sdk.subscribeQueueToTopic(sns, {
+        topicArn,
+        queueArn,
+      })
+    }),
+  )
 }
 
-const subscribeQueueTopicsByTheirPrefix = (
+const subscribeQueueTopicsByTheirPrefix = async (
   credentials: Credentials,
   topicNames: string[],
   queueName: string,
   deadLetterQueueName?: string,
   maxReceiveCount: number = 5,
 ) => {
-  return new PProgress(async (resolve, reject, progress) => {
-    try {
-      let counter = 0
-      const counterTotal = 3 + topicNames.length * 2
-      const tick = () => {
-        counter += 1
-        progress(counter / counterTotal)
-      }
-      const sqs = new SQS(credentials)
-      const sns = new SNS(credentials)
+  const sqs = new SQS(credentials)
+  const sns = new SNS(credentials)
 
-      const topicPrefix = commonPrefix(topicNames)
+  const topicPrefix = commonPrefix(topicNames)
 
-      const queueUrl = await sdk.createQueue(sqs, queueName)
-      tick()
+  const queueUrl = await sdk.createQueue(sqs, queueName)
 
-      const queueArn = await sdk.getQueueArnByUrl(sqs, queueUrl)
-      tick()
+  const queueArn = await sdk.getQueueArnByUrl(sqs, queueUrl)
 
-      const arnId = queueArn.match(/^arn:aws:sqs:([^:]*:[^:]*):/)[1]
-      const topicArnPrefix = `arn:aws:sns:${arnId}:${topicPrefix}*`
+  const arnId = queueArn.match(/^arn:aws:sqs:([^:]*:[^:]*):/)[1]
+  const topicArnPrefix = `arn:aws:sns:${arnId}:${topicPrefix}*`
 
-      const attributes: SQS.Types.QueueAttributeMap = {
-        Policy: buildQueuePolicy({
-          queueArn,
-          topicArnList: [topicArnPrefix],
-        }),
-      }
+  const attributes: SQS.Types.QueueAttributeMap = {
+    Policy: buildQueuePolicy({
+      queueArn,
+      topicArnList: [topicArnPrefix],
+    }),
+  }
 
-      if (deadLetterQueueName != null) {
-        const deadLetterTargetArn = await sdk.getQueueArnByName(
-          sqs,
-          deadLetterQueueName,
-        )
-        attributes.RedrivePolicy = JSON.stringify({
-          maxReceiveCount,
-          deadLetterTargetArn,
-        })
-      }
+  if (deadLetterQueueName != null) {
+    const deadLetterTargetArn = await sdk.getQueueArnByName(
+      sqs,
+      deadLetterQueueName,
+    )
+    attributes.RedrivePolicy = JSON.stringify({
+      maxReceiveCount,
+      deadLetterTargetArn,
+    })
+  }
 
-      await sdk.setQueueAttributes(sqs, queueUrl, attributes)
-      tick()
+  await sdk.setQueueAttributes(sqs, queueUrl, attributes)
 
-      await Promise.all(
-        topicNames.map(async (topicName) => {
-          const topicArn = await sdk.createTopic(sns, topicName)
-          tick()
+  await Promise.all(
+    topicNames.map(async (topicName) => {
+      const topicArn = await sdk.createTopic(sns, topicName)
 
-          await sdk.subscribeQueueToTopic(sns, { topicArn, queueArn })
-          tick()
-        }),
-      )
-      resolve()
-    } catch (error) {
-      reject(error)
-    }
-  })
+      await sdk.subscribeQueueToTopic(sns, { topicArn, queueArn })
+    }),
+  )
 }
 
 const publish = async (
