@@ -1,4 +1,4 @@
-import { Credentials } from '../index'
+import { Credentials } from '../../index'
 
 const resolve = (value?: any) => ({
   promise: () => Promise.resolve(value),

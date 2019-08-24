@@ -2,6 +2,7 @@ import { SQS, SNS } from 'aws-sdk'
 import commonPrefix from 'common-prefix'
 
 import buildQueuePolicy from './buildQueuePolicy'
+import buildQueueRedrivePolicy from './buildQueueRedrivePolicy'
 
 import * as sdk from './sdk'
 
@@ -115,7 +116,7 @@ const subscribeQueueToTopics = async (
       sqs,
       deadLetterQueueName,
     )
-    attributes.RedrivePolicy = JSON.stringify({
+    attributes.RedrivePolicy = buildQueueRedrivePolicy({
       maxReceiveCount,
       deadLetterTargetArn,
     })
@@ -143,12 +144,10 @@ const subscribeQueueTopicsByTheirPrefix = async (
   const sqs = new SQS(credentials)
   const sns = new SNS(credentials)
 
-  const topicPrefix = commonPrefix(topicNames)
-
   const queueUrl = await sdk.createQueue(sqs, queueName)
-
   const queueArn = await sdk.getQueueArnByUrl(sqs, queueUrl)
 
+  const topicPrefix = commonPrefix(topicNames)
   const arnId = queueArn.match(/^arn:aws:sqs:([^:]*:[^:]*):/)[1]
   const topicArnPrefix = `arn:aws:sns:${arnId}:${topicPrefix}*`
 
@@ -164,7 +163,7 @@ const subscribeQueueTopicsByTheirPrefix = async (
       sqs,
       deadLetterQueueName,
     )
-    attributes.RedrivePolicy = JSON.stringify({
+    attributes.RedrivePolicy = buildQueueRedrivePolicy({
       maxReceiveCount,
       deadLetterTargetArn,
     })
@@ -175,7 +174,6 @@ const subscribeQueueTopicsByTheirPrefix = async (
   await Promise.all(
     topicNames.map(async (topicName) => {
       const topicArn = await sdk.createTopic(sns, topicName)
-
       await sdk.subscribeQueueToTopic(sns, { topicArn, queueArn })
     }),
   )
