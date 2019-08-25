@@ -57,11 +57,41 @@ await deleteTopic(credentials, topicName)
 
 ### `deleteQueue`
 
-(credentials, queueName)
+Delete a queue.
+
+- `credentials`: SQS credentials
+- `queueName`: name of the queue to delete
+
+```typescript
+import { deleteQueue } from 'aws-sdk'
+
+const queueName = 'my-queue-name'
+
+await deleteQueue(credentials, queueName)
+```
 
 ### `deleteMessage`
 
-(credentials, queueName, receiptHandle)
+Remove a message from a queue.
+
+After you have finished receiving a message from the queue, you should remove
+it so that it does not get sent again.
+
+- `credentials`: SQS credentials
+- `queueName`: name of the queue to delete the message from
+- `receiptHandle`: the receipt handle of the mesage to delete
+
+```typescript
+import { receiveMessage, deleteMessage } from 'aws-sdk'
+
+const queueName = 'my-queue-name'
+
+const messages = await receiveMessage(credentials, 1, 10, queueName)
+if (messages.length > 0) {
+  const receiptHandle = messages[0].ReceiptHandle
+  await deleteMessage(credentials, queueName, receiptHandle)
+}
+```
 
 ### `registerTopics`
 
