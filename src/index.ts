@@ -1,10 +1,10 @@
 import { SQS, SNS } from 'aws-sdk'
 import commonPrefix from 'common-prefix'
 
-import buildQueuePolicy from './buildQueuePolicy'
-import buildQueueRedrivePolicy from './buildQueueRedrivePolicy'
-import parseQueuePolicy from './parseQueuePolicy'
-import uniqueConcat from './uniqueConcat'
+import buildQueuePolicy from './utils/buildQueuePolicy'
+import buildQueueRedrivePolicy from './utils/buildQueueRedrivePolicy'
+import parseQueuePolicy from './utils/parseQueuePolicy'
+import uniqueConcat from './utils/uniqueConcat'
 
 import * as sdk from './sdk'
 

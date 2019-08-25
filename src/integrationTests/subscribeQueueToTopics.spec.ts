@@ -1,7 +1,7 @@
 import { test, credentials } from './utils/test'
 import { arn, url } from './utils/mockAws'
 
-import buildQueuePolicy from '../buildQueuePolicy'
+import buildQueuePolicy from '../utils/buildQueuePolicy'
 
 test('subscribeQueueToTopics', async (t) => {
   const { eventLog, fanout } = t.context
