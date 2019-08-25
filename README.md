@@ -166,9 +166,8 @@ If the queue or topics do not exist, they will be created.
 - `credentials`: SQS/SNS credentials
 - `topicNames`: list of topics to subscribe to
 - `queueName`: queue to forward topics o
-- `deadLetterQueueName`: a queue to send failed messages to (optional)
-- `maxReceiveCount`: how many times to retry messages before sending them to
-  the dead letter queue (optional, default = 5)
+- `deadLetterQueueName`: (optional) The name of dead-letter queue to which SQS moves messages after the value of `maxReceiveCount` is exceeded. 
+- `maxReceiveCount`: (optional, default = 5) The number of times a message is delivered to the source queue before being moved to the dead-letter queue. When the ReceiveCount for a message exceeds the maxReceiveCount for a queue, SQS moves the message to the dead-letter-queue. 
 
 ```typescript
 import { subscribeQueuesToTopics } from 'aws-sdk'
