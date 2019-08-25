@@ -107,7 +107,7 @@ const topicNames = [
   'create-account',
   'read-account',
   'update-account',
-  'delete-account',
+  'destroy-account',
 ]
 
 await registerTopics(credentials, topicNames)
@@ -149,21 +149,97 @@ const maxNumberOfMessages = 5
 const visibilityTimeout = 15
 const queueName = 'actions'
 
-const messages = await receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout,
-queueName)
+const messages = await receiveMessage(
+  credentials,
+  maxNumberOfMessages,
+  visibilityTimeout,
+  queueName
+)
 ```
 
 ### `subscribeQueuesToTopics`
 
-(credentials, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)
+Subscribes a queue to a list of topics.
+
+If the queue or topics do not exist, they will be created.
+
+- `credentials`: SQS/SNS credentials
+- `topicNames`: list of topics to subscribe to
+- `queueName`: queue to forward topics o
+- `deadLetterQueueName`: a queue to send failed messages to (optional)
+- `maxReceiveCount`: how many times to retry messages before sending them to
+  the dead letter queue (optional, default = 5)
+
+```typescript
+import { subscribeQueuesToTopics } from 'aws-sdk'
+
+const topicNames = ['create', 'read', 'update', 'destroy']
+const queueName = 'actions'
+const deadLetterQueueName = 'dead-letter'
+const maxReceiveCount = 5
+
+await subscribeQueuesToTopics(
+  credentials,
+  topicNames,
+  queueName,
+  deadLetterQueueName,
+  maxReceiveCount
+)
+```
 
 ### `subscribeQueueTopicsByTheirPrefix`
 
-(credentials, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)
+If you have a large number of topics to create, you may start hitting the
+AWS limit on how large the queue policy can be.
+
+Instead you can define the queue to accept any topic that matches a wildcard.
+
+- `credentials`: SQS/SNS credentials
+- `topicNames`: list of topics to subscribe to
+- `queueName`: queue to forward topics o
+- `deadLetterQueueName`: a queue to send failed messages to (optional)
+- `maxReceiveCount`: how many times to retry messages before sending them to
+  the dead letter queue (optional, default = 5)
+
+```typescript
+import { subscribeQueueTopicsByTheirPrefix } from 'aws-sdk'
+
+const topicNames = ['create', 'read', 'update', 'destroy']
+const queueName = 'actions'
+const deadLetterQueueName = 'dead-letter'
+const maxReceiveCount = 5
+
+await subscribeQueueTopicsByTheirPrefix(
+  credentials,
+  topicNames,
+  queueName,
+  deadLetterQueueName,
+  maxReceiveCount
+)
+```
 
 ### `publish`
 
-(credentials, topicName, message)
+Publish a message with a particular topic. Any queues that are subscribed to
+the topic will receive a copy of it.
+
+The message will be serialized using `JSON.stringify`.
+
+- `credentials`: SNS credentials
+- `topicName`: name of the topic
+- `message`: message payload to send
+
+```typescript
+import { subscribeQueueTopicsByTheirPrefix } from 'aws-sdk'
+
+const topicName = 'create'
+const message = {
+  userId: 123,
+  email: 'john.smith@example.co.nz'
+}
+
+await publish(credentials, topicName, message)
+```
 
 ### Credentials
 
