@@ -30,29 +30,29 @@ await publish(credentials, 'send-email', {
 
 ## API v2 Documentation
 
-- `createQueue(c, { queueName })`
-- `createTopic(c, { topicName })`
-- `deleteMessage(c, { queueName, receiptHandle })`
-- `deleteQueue(c, { queueName })`
-- `deleteTopic(c, { topicName })`
-- `publishMessage(c, { topicName, message })`
-- `receiveMessage(c, { queueName, maxNumberOfMessages, visibilityTimeout })`
-- `setQueuePolicy(c, { queueName, topicNames, ignoreExistingPolicy })`
-- `setQueuePolicyWithPattern(c, { queueName, topicNamePattern })`
-- `setQueueRedrivePolicy(c, { queueName, deadLetterQueueName, maxReceiveCount })`
-- `subscribeQueueToTopic(c, { queueName, topicName })`
+- `createQueue(credentials, { queueName })`
+- `createTopic(credentials, { topicName })`
+- `deleteMessage(credentials, { queueName, receiptHandle })`
+- `deleteQueue(credentials, { queueName })`
+- `deleteTopic(credentials, { topicName })`
+- `publishMessage(credentials, { topicName, message })`
+- `receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`
+- `setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`
+- `setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern })`
+- `setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`
+- `subscribeQueueToTopic(credentials, { queueName, topicName })`
 
 ## API v1 Documentation
 
-- [`deleteMessage(c, queueName, receiptHandle)`](#deleteMessage)
-- [`deleteQueue(c, queueName)`](#deleteQueue)
-- [`deleteTopic(c, topicName)`](#deleteTopic)
-- [`publish(c, topicName, message)`](#publish)
-- [`receiveMessage(c, number, timeout, queueName)`](#receiveMessage)
-- [`registerQueues(c, queueNames)`](#registerQueues)
-- [`registerTopics(c, topicNames)`](#registerTopics)
-- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, ...)`](#subscribeQueueTopicsByTheirPrefix)
-- [`subscribeQueuesToTopics(c, topicNames, queueName, ...)`](#subscribeQueuesToTopics)
+- [`deleteMessage(credentials, queueName, receiptHandle)`](#deleteMessage)
+- [`deleteQueue(credentials, queueName)`](#deleteQueue)
+- [`deleteTopic(credentials, topicName)`](#deleteTopic)
+- [`publish(credentials, topicName, message)`](#publish)
+- [`receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout, queueName)`](#receiveMessage)
+- [`registerQueues(credentials, queueNames)`](#registerQueues)
+- [`registerTopics(credentials, topicNames)`](#registerTopics)
+- [`subscribeQueueTopicsByTheirPrefix(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5]`](#subscribeQueueTopicsByTheirPrefix)
+- [`subscribeQueuesToTopics(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5])`](#subscribeQueuesToTopics)
 
 ### `deleteTopic`
 
