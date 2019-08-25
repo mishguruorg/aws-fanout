@@ -26,7 +26,7 @@ const parseQueuePolicy = (policyString: string): string[] => {
   }
 
   const sendMessageStatements = policy.Statement.filter((item) => {
-    return item.Action === 'SQS:SendMessage'
+    return item != null && item.Action === 'SQS:SendMessage'
   })
 
   const topicArns = sendMessageStatements

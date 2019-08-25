@@ -7,16 +7,22 @@ test('should handle invalid values', (t) => {
   const values: string[] = [
     undefined,
     null,
+    'null',
     '',
     '0',
     '{}',
     '{"Statement":false}',
+    '{"Statement":null}',
     '{"Statement":{}}',
+    '{"Statement":[null]}',
     '{"Statement":[{"Action":"SQS:SendMessage"}]}',
+    '{"Statement":[{"Action":"SQS:SendMessage","Condition":null}]}',
     '{"Statement":[{"Action":"SQS:SendMessage","Condition":{}}]}',
     '{"Statement":[{"Action":"SQS:SendMessage","Condition":{"ArnEquals":{}}}]}',
     '{"Statement":[{"Action":"SQS:SendMessage","Condition":{"ArnEquals":{"aws:SourceArn":true}}}]}',
+    '{"Statement":[{"Action":"SQS:SendMessage","Condition":{"ArnEquals":{"aws:SourceArn":null}}}]}',
     '{"Statement":[{"Action":"SQS:SendMessage","Condition":{"ArnEquals":{"aws:SourceArn":[true]}}}]}',
+    '{"Statement":[{"Action":"SQS:SendMessage","Condition":{"ArnEquals":{"aws:SourceArn":[null]}}}]}',
   ]
 
   for (const value of values) {
