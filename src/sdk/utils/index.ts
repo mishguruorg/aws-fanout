@@ -1,6 +1,6 @@
 import Bottleneck from 'bottleneck'
 
-import { AWS_FANOUT_RATE_LIMIT_MS } from '../constants'
+import { AWS_FANOUT_RATE_LIMIT_MS } from '../../constants'
 
 interface ConfigWithAccessKeyId {
   config: {
