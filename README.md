@@ -95,15 +95,63 @@ if (messages.length > 0) {
 
 ### `registerTopics`
 
-(credentials, topicNames)
+Create multiple topics on SNS.
+
+- `credentials`: SNS credentials
+- `topicNames`: list of topics to create
+
+```typescript
+import { registerTopics } from 'aws-sdk'
+
+const topicNames = [
+  'create-account',
+  'read-account',
+  'update-account',
+  'delete-account',
+]
+
+await registerTopics(credentials, topicNames)
+```
 
 ### `registerQueues`
 
-(credentials, queueNames)
+Create multiple queues on SNS.
+
+- `credentials`: SNS credentials
+- `queueNames`: list of queues to create
+
+```typescript
+import { registerQueues } from 'aws-sdk'
+
+const queueNames = [
+  'logs',
+  'errors',
+  'actions',
+]
+
+await registerQueues(credentials, queueNames)
+```
 
 ### `receiveMessage`
 
-(credentials, maxNumberOfMessages, visibilityTimeout, queueName)
+Listen for messages on the queue.
+
+- `credentials`: SQS credentials
+- `maxNumberOfMessages`: Maximum number of messages to retrieve
+- `visibilityTimeout`: The duration (in seconds) that the received messages are
+  hidden from subsequent retrieve requests
+- `queueName`: Name of the queue to receive messages from
+
+```typescript
+import { receiveMessage } from 'aws-sdk'
+
+const maxNumberOfMessages = 5
+const visibilityTimeout = 15
+const queueName = 'actions'
+
+const messages = await receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout,
+queueName)
+```
 
 ### `subscribeQueuesToTopics`
 
