@@ -36,13 +36,24 @@ await publish(credentials, 'send-email', {
 - [`receiveMessage(c, number, timeout, queueName)`](#receiveMessage)
 - [`registerTopics(c, topicNames)`](#registerTopics)
 - [`registerQueues(c, queueNames)`](#registerQueues)
-- [`subscribeQueuesToTopics(c, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)`](#subscribeQueuesToTopics)
-- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, deadLetterQueueName?, maxNumberOfMessages?)`](#subscribeQueueTopicsByTheirPrefix)
+- [`subscribeQueuesToTopics(c, topicNames, queueName, ...)`](#subscribeQueuesToTopics)
+- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, ...)`](#subscribeQueueTopicsByTheirPrefix)
 - [`publish(c, topicName, message)`](#publish)
 
 ### `deleteTopic`
 
-(credentials, topicName)
+Delete a topic.
+
+- `credentials`: SNS credentials
+- `topicName`: name of the topic to delete
+
+```typescript
+import { deleteTopic } from 'aws-sdk'
+
+const topicName = 'my-topic-name'
+
+await deleteTopic(credentials, topicName)
+```
 
 ### `deleteQueue`
 
