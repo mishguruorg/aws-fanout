@@ -1,12 +1,14 @@
 import { test, credentials } from './utils/test'
 import { arn, url } from './utils/mockAws'
 
+import buildQueuePolicy from '../utils/buildQueuePolicy'
+
 test('subscribeQueueTopicsByTheirPrefix', async (t) => {
   const { eventLog, fanout } = t.context
 
   const queueName = t.title
   const topicNames = [t.title + '-a', t.title + '-b', t.title + '-c']
-  const topicPrefix = arn.sns(t.title + '-*')
+  const topicArnPattern = arn.sns(t.title + '-*')
 
   await fanout.subscribeQueueTopicsByTheirPrefix(
     credentials,
@@ -18,7 +20,7 @@ test('subscribeQueueTopicsByTheirPrefix', async (t) => {
     ['sqs.createQueue', { QueueName: queueName }],
     [
       'sqs.getQueueAttributes',
-      { QueueUrl: url(queueName), AttributeNames: ['QueueArn'] },
+      { QueueUrl: url(queueName), AttributeNames: ['QueueArn', 'Policy'] },
     ],
     [
       'sqs.setQueueAttributes',
@@ -37,7 +39,7 @@ test('subscribeQueueTopicsByTheirPrefix', async (t) => {
                 Resource: arn.sqs(queueName),
                 Condition: {
                   ArnEquals: {
-                    'aws:SourceArn': topicPrefix,
+                    'aws:SourceArn': topicArnPattern,
                   },
                 },
               },
@@ -83,7 +85,7 @@ test('with deadLetterQueueName', async (t) => {
   const topicNames = [t.title]
   const deadLetterQueueName = 'ghoul'
   const maxReceiveCount = 2
-  const topicPrefix = arn.sns(topicNames[0] + '*')
+  const topicArnPattern = arn.sns(topicNames[0] + '*')
 
   await fanout.subscribeQueueTopicsByTheirPrefix(
     credentials,
@@ -97,36 +99,33 @@ test('with deadLetterQueueName', async (t) => {
     ['sqs.createQueue', { QueueName: queueName }],
     [
       'sqs.getQueueAttributes',
-      { QueueUrl: url(queueName), AttributeNames: ['QueueArn'] },
-    ],
-    ['sqs.createQueue', { QueueName: deadLetterQueueName }],
-    [
-      'sqs.getQueueAttributes',
-      { QueueUrl: url(deadLetterQueueName), AttributeNames: ['QueueArn'] },
+      { QueueUrl: url(queueName), AttributeNames: ['QueueArn', 'Policy'] },
     ],
     [
       'sqs.setQueueAttributes',
       {
         QueueUrl: url(queueName),
         Attributes: {
-          Policy: JSON.stringify({
-            Version: '2012-10-17',
-            Id: `${arn.sqs(queueName)}/SQSDefaultPolicy`,
-            Statement: [
-              {
-                Sid: 'Sid1234567890123',
-                Effect: 'Allow',
-                Principal: '*',
-                Action: 'SQS:SendMessage',
-                Resource: arn.sqs(queueName),
-                Condition: {
-                  ArnEquals: {
-                    'aws:SourceArn': topicPrefix,
-                  },
-                },
-              },
-            ],
+          Policy: buildQueuePolicy({
+            queueArn: arn.sqs(queueName),
+            topicArnList: [topicArnPattern],
           }),
+        },
+      },
+    ],
+    ['sqs.createQueue', { QueueName: deadLetterQueueName }],
+    [
+      'sqs.getQueueAttributes',
+      {
+        QueueUrl: url(deadLetterQueueName),
+        AttributeNames: ['QueueArn', 'Policy'],
+      },
+    ],
+    [
+      'sqs.setQueueAttributes',
+      {
+        QueueUrl: url(queueName),
+        Attributes: {
           RedrivePolicy: JSON.stringify({
             maxReceiveCount,
             deadLetterTargetArn: arn.sqs(deadLetterQueueName),

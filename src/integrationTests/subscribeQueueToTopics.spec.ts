@@ -96,34 +96,31 @@ test('with deadLetterQueueName', async (t) => {
       { QueueUrl: url(queueName), AttributeNames: ['QueueArn', 'Policy'] },
     ],
     ['sns.createTopic', { Name: topicNames[0] }],
+    [
+      'sqs.setQueueAttributes',
+      {
+        QueueUrl: url(queueName),
+        Attributes: {
+          Policy: buildQueuePolicy({
+            queueArn: arn.sqs(queueName),
+            topicArnList: [arn.sns(topicNames[0])],
+          }),
+        },
+      },
+    ],
     ['sqs.createQueue', { QueueName: deadLetterQueueName }],
     [
       'sqs.getQueueAttributes',
-      { QueueUrl: url(deadLetterQueueName), AttributeNames: ['QueueArn'] },
+      {
+        QueueUrl: url(deadLetterQueueName),
+        AttributeNames: ['QueueArn', 'Policy'],
+      },
     ],
     [
       'sqs.setQueueAttributes',
       {
         QueueUrl: url(queueName),
         Attributes: {
-          Policy: JSON.stringify({
-            Version: '2012-10-17',
-            Id: `${arn.sqs(queueName)}/SQSDefaultPolicy`,
-            Statement: [
-              {
-                Sid: 'Sid1234567890123',
-                Effect: 'Allow',
-                Principal: '*',
-                Action: 'SQS:SendMessage',
-                Resource: arn.sqs(queueName),
-                Condition: {
-                  ArnEquals: {
-                    'aws:SourceArn': arn.sns(topicNames[0]),
-                  },
-                },
-              },
-            ],
-          }),
           RedrivePolicy: JSON.stringify({
             maxReceiveCount,
             deadLetterTargetArn: arn.sqs(deadLetterQueueName),

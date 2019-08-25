@@ -28,17 +28,31 @@ await publish(credentials, 'send-email', {
 })
 ```
 
-## API Documentation
+## API v2 Documentation
 
-- [`deleteTopic(c, topicName)`](#deleteTopic)
-- [`deleteQueue(c, queueName)`](#deleteQueue)
+- `createQueue(c, { queueName })`
+- `createTopic(c, { topicName })`
+- `deleteMessage(c, { queueName, receiptHandle })`
+- `deleteQueue(c, { queueName })`
+- `deleteTopic(c, { topicName })`
+- `publishMessage(c, { topicName, message })`
+- `receiveMessage(c, { queueName, maxNumberOfMessages, visibilityTimeout })`
+- `setQueuePolicy(c, { queueName, topicNames, ignoreExistingPolicy })`
+- `setQueuePolicyWithPattern(c, { queueName, topicNamePattern })`
+- `setQueueRedrivePolicy(c, { queueName, deadLetterQueueName, maxReceiveCount })`
+- `subscribeQueueToTopic(c, { queueName, topicName })`
+
+## API v1 Documentation
+
 - [`deleteMessage(c, queueName, receiptHandle)`](#deleteMessage)
-- [`receiveMessage(c, number, timeout, queueName)`](#receiveMessage)
-- [`registerTopics(c, topicNames)`](#registerTopics)
-- [`registerQueues(c, queueNames)`](#registerQueues)
-- [`subscribeQueuesToTopics(c, topicNames, queueName, ...)`](#subscribeQueuesToTopics)
-- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, ...)`](#subscribeQueueTopicsByTheirPrefix)
+- [`deleteQueue(c, queueName)`](#deleteQueue)
+- [`deleteTopic(c, topicName)`](#deleteTopic)
 - [`publish(c, topicName, message)`](#publish)
+- [`receiveMessage(c, number, timeout, queueName)`](#receiveMessage)
+- [`registerQueues(c, queueNames)`](#registerQueues)
+- [`registerTopics(c, topicNames)`](#registerTopics)
+- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, ...)`](#subscribeQueueTopicsByTheirPrefix)
+- [`subscribeQueuesToTopics(c, topicNames, queueName, ...)`](#subscribeQueuesToTopics)
 
 ### `deleteTopic`
 
