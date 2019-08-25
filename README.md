@@ -44,7 +44,7 @@ await publish(credentials, 'send-email', {
 
 Delete a topic.
 
-- `credentials`: SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `topicName`: name of the topic to delete
 
 ```typescript
@@ -59,7 +59,7 @@ await deleteTopic(credentials, topicName)
 
 Delete a queue.
 
-- `credentials`: SQS credentials
+- `credentials`: [Credentials](#credentials)
 - `queueName`: name of the queue to delete
 
 ```typescript
@@ -77,7 +77,7 @@ Remove a message from a queue.
 After you have finished receiving a message from the queue, you should remove
 it so that it does not get sent again.
 
-- `credentials`: SQS credentials
+- `credentials`: [Credentials](#credentials)
 - `queueName`: name of the queue to delete the message from
 - `receiptHandle`: the receipt handle of the mesage to delete
 
@@ -97,7 +97,7 @@ if (messages.length > 0) {
 
 Create multiple topics on SNS.
 
-- `credentials`: SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `topicNames`: list of topics to create
 
 ```typescript
@@ -117,7 +117,7 @@ await registerTopics(credentials, topicNames)
 
 Create multiple queues on SNS.
 
-- `credentials`: SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `queueNames`: list of queues to create
 
 ```typescript
@@ -136,7 +136,7 @@ await registerQueues(credentials, queueNames)
 
 Listen for messages on the queue.
 
-- `credentials`: SQS credentials
+- `credentials`: [Credentials](#credentials)
 - `maxNumberOfMessages`: Maximum number of messages to retrieve
 - `visibilityTimeout`: The duration (in seconds) that the received messages are
   hidden from subsequent retrieve requests
@@ -163,7 +163,7 @@ Subscribes a queue to a list of topics.
 
 If the queue or topics do not exist, they will be created.
 
-- `credentials`: SQS/SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `topicNames`: list of topics to subscribe to
 - `queueName`: queue to forward topics to
 - `deadLetterQueueName`: (optional) The name of dead-letter queue to which SQS moves messages after the value of "maxReceiveCount" is exceeded. 
@@ -193,7 +193,7 @@ AWS limit on how large the queue policy can be.
 
 Instead you can define the queue to accept any topic that matches a wildcard.
 
-- `credentials`: SQS/SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `topicNames`: list of topics to subscribe to
 - `queueName`: queue to forward topics to
 - `deadLetterQueueName`: (optional) The name of dead-letter queue to which SQS moves messages after the value of "maxReceiveCount" is exceeded. 
@@ -224,7 +224,7 @@ the topic will receive a copy of it.
 
 The message will be serialized using `JSON.stringify`.
 
-- `credentials`: SNS credentials
+- `credentials`: [Credentials](#credentials)
 - `topicName`: name of the topic
 - `message`: message payload to send
 
