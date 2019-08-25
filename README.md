@@ -30,15 +30,15 @@ await publish(credentials, 'send-email', {
 
 ## API Documentation
 
-- [`deleteTopic`](#deleteTopic)
-- [`deleteQueue`](#deleteQueue)
-- [`deleteMessage`](#deleteMessage)
-- [`receiveMessage`](#receiveMessage)
-- [`registerTopics`](#registerTopics)
-- [`registerQueues`](#registerQueues)
-- [`subscribeQueuesToTopics`](#subscribeQueuesToTopics)
-- [`subscribeQueueTopicsByTheirPrefix`](#subscribeQueueTopicsByTheirPrefix)
-- [`publish`](#publish)
+- [`deleteTopic(c, topicName)`](#deleteTopic)
+- [`deleteQueue(c, queueName)`](#deleteQueue)
+- [`deleteMessage(c, queueName, receiptHandle)`](#deleteMessage)
+- [`receiveMessage(c, number, timeout, queueName)`](#receiveMessage)
+- [`registerTopics(c, topicNames)`](#registerTopics)
+- [`registerQueues(c, queueNames)`](#registerQueues)
+- [`subscribeQueuesToTopics(c, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)`](#subscribeQueuesToTopics)
+- [`subscribeQueueTopicsByTheirPrefix(c, topicNames, queueName, deadLetterQueueName?, maxNumberOfMessages?)`](#subscribeQueueTopicsByTheirPrefix)
+- [`publish(c, topicName, message)`](#publish)
 
 ### `deleteTopic`
 
