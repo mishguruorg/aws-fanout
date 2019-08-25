@@ -3,6 +3,8 @@ import commonPrefix from 'common-prefix'
 
 import buildQueuePolicy from './buildQueuePolicy'
 import buildQueueRedrivePolicy from './buildQueueRedrivePolicy'
+import parseQueuePolicy from './parseQueuePolicy'
+import uniqueConcat from './uniqueConcat'
 
 import * as sdk from './sdk'
 
@@ -77,33 +79,14 @@ const subscribeQueueToTopics = async (
     'Policy',
   ])
 
-  const queueArn = queueAttributes.QueueArn
-  const queuePolicy = queueAttributes.Policy
-
-  const existingTopicArns =
-    queuePolicy == null
-      ? []
-      : JSON.parse(queuePolicy)
-        .Statement.filter((item: any) => {
-          return item.Action === 'SQS:SendMessage'
-        })
-        .map((item: any) => {
-          if (item.Condition == null || item.Condition.ArnEquals == null) {
-            return []
-          }
-          return item.Condition.ArnEquals['aws:SourceArn']
-        })
-        .flat()
-
   const topicArns = await Promise.all(
-    topicNames.map(async (topicName) => {
-      const topicArn = await sdk.createTopic(sns, topicName)
-      return topicArn
-    }),
+    topicNames.map((topicName) => sdk.createTopic(sns, topicName)),
   )
 
-  const allTopicArns = [...new Set([...existingTopicArns, ...topicArns])]
+  const existingTopicArns = parseQueuePolicy(queueAttributes.Policy)
+  const allTopicArns = uniqueConcat(existingTopicArns, topicArns)
 
+  const queueArn = queueAttributes.QueueArn
   const attributes: SQS.Types.QueueAttributeMap = {
     Policy: buildQueuePolicy({
       queueArn,
@@ -126,10 +109,7 @@ const subscribeQueueToTopics = async (
 
   await Promise.all(
     topicArns.map(async (topicArn) => {
-      await sdk.subscribeQueueToTopic(sns, {
-        topicArn,
-        queueArn,
-      })
+      await sdk.subscribeQueueToTopic(sns, { topicArn, queueArn })
     }),
   )
 }

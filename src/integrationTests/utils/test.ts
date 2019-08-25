@@ -2,7 +2,7 @@ import anyTest, { TestInterface } from 'ava'
 import * as stu from 'stu'
 import tk from 'timekeeper'
 
-import { mockAws } from './mockAws'
+import { mockAws, EventLog, PolicyMap } from './mockAws'
 import { Credentials } from '../../index'
 
 tk.freeze(new Date(1234567890123))
@@ -14,7 +14,8 @@ const credentials = {
 }
 
 const test = anyTest as TestInterface<{
-  eventLog: [string, any][],
+  eventLog: EventLog,
+  policyMap: PolicyMap,
   fanout: {
     deleteTopic: (c: Credentials, t: string) => Promise<void>,
     deleteQueue: (c: Credentials, q: string) => Promise<void>,
@@ -50,11 +51,12 @@ const test = anyTest as TestInterface<{
 }>
 
 test.beforeEach((t) => {
-  const { eventLog } = stu.mock('aws-sdk', mockAws)
+  const { eventLog, policyMap } = stu.mock('aws-sdk', mockAws)
   const fanout = stu.test('../../index')
 
   t.context = {
     eventLog,
+    policyMap,
     fanout,
   }
 })

@@ -1,10 +1,13 @@
+import { SNS, SQS } from 'aws-sdk'
+
 import { Credentials } from '../../index'
 
 const resolve = (value?: any) => ({
   promise: () => Promise.resolve(value),
 })
 
-type EventLog = [string, any][]
+export type EventLog = [string, any][]
+export type PolicyMap = Map<string, string>
 
 const arn = {
   sqs: (i: string) => `arn:aws:sqs:region:id:${i}`,
@@ -15,48 +18,60 @@ const unurl = (i: string) => i.slice(8)
 
 export class MockSQS {
   private eventLog: EventLog
+  private policyMap: PolicyMap
+
   public config: Credentials
 
-  public constructor (eventLog: EventLog, config: Credentials) {
+  public constructor (
+    eventLog: EventLog,
+    policyMap: PolicyMap,
+    config: Credentials,
+  ) {
     this.eventLog = eventLog
+    this.policyMap = policyMap
     this.config = config
   }
 
-  public createQueue (options: any) {
+  public createQueue (options: SQS.Types.CreateQueueRequest) {
     this.eventLog.push(['sqs.createQueue', options])
     return resolve({
       QueueUrl: url(options.QueueName),
     })
   }
 
-  public deleteQueue (options: any) {
+  public deleteQueue (options: SQS.Types.DeleteQueueRequest) {
     this.eventLog.push(['sqs.deleteQueue', options])
     return resolve()
   }
 
-  public deleteMessage (options: any) {
+  public deleteMessage (options: SQS.Types.DeleteMessageRequest) {
     this.eventLog.push(['sqs.deleteMessage', options])
     return resolve()
   }
 
-  public receiveMessage (options: any) {
+  public receiveMessage (options: SQS.Types.ReceiveMessageRequest) {
     this.eventLog.push(['sqs.receiveMessage', options])
     return resolve({
       Messages: ['Message'],
     })
   }
 
-  public getQueueAttributes (options: any) {
+  public getQueueAttributes (options: SQS.Types.GetQueueAttributesRequest) {
+    const queueName = unurl(options.QueueUrl)
+    const attributes: Record<string, string> = {}
+
+    if (options.AttributeNames.includes('QueueArn')) {
+      attributes.QueueArn = arn.sqs(queueName)
+    }
+    if (options.AttributeNames.includes('Policy')) {
+      attributes.Policy = this.policyMap.get(queueName)
+    }
+
     this.eventLog.push(['sqs.getQueueAttributes', options])
-    return resolve({
-      Attributes: {
-        QueueArn: arn.sqs(unurl(options.QueueUrl)),
-        Policy: undefined,
-      },
-    })
+    return resolve({ Attributes: attributes })
   }
 
-  public setQueueAttributes (options: any) {
+  public setQueueAttributes (options: SQS.Types.SetQueueAttributesRequest) {
     this.eventLog.push(['sqs.setQueueAttributes', options])
     return resolve()
   }
@@ -71,26 +86,26 @@ export class MockSNS {
     this.config = config
   }
 
-  public createTopic (options: any) {
+  public createTopic (options: SNS.Types.CreateTopicInput) {
     this.eventLog.push(['sns.createTopic', options])
     return resolve({
       TopicArn: arn.sns(options.Name),
     })
   }
 
-  public deleteTopic (options: any) {
+  public deleteTopic (options: SNS.Types.DeleteTopicInput) {
     this.eventLog.push(['sns.deleteTopic', options])
     return resolve()
   }
 
-  public publish (options: any) {
+  public publish (options: SNS.Types.PublishInput) {
     this.eventLog.push(['sns.publish', options])
     return resolve({
       MessageId: 'MessageId',
     })
   }
 
-  public subscribe (options: any) {
+  public subscribe (options: SNS.Types.SubscribeInput) {
     this.eventLog.push(['sns.subscribe', options])
     return resolve()
   }
@@ -98,10 +113,12 @@ export class MockSNS {
 
 const mockAws = () => {
   const eventLog: [string, any][] = []
+  const policyMap: PolicyMap = new Map()
 
   return {
     eventLog,
-    SQS: MockSQS.bind(null, eventLog),
+    policyMap,
+    SQS: MockSQS.bind(null, eventLog, policyMap),
     SNS: MockSNS.bind(null, eventLog),
   }
 }

@@ -1,6 +1,8 @@
 import { test, credentials } from './utils/test'
 import { arn, url } from './utils/mockAws'
 
+import buildQueuePolicy from '../buildQueuePolicy'
+
 test('subscribeQueueToTopics', async (t) => {
   const { eventLog, fanout } = t.context
 
@@ -125,6 +127,54 @@ test('with deadLetterQueueName', async (t) => {
           RedrivePolicy: JSON.stringify({
             maxReceiveCount,
             deadLetterTargetArn: arn.sqs(deadLetterQueueName),
+          }),
+        },
+      },
+    ],
+    [
+      'sns.subscribe',
+      {
+        Protocol: 'sqs',
+        TopicArn: arn.sns(topicNames[0]),
+        Endpoint: arn.sqs(queueName),
+      },
+    ],
+  ])
+})
+
+test('with existing policy', async (t) => {
+  const { eventLog, policyMap, fanout } = t.context
+
+  const queueName = t.title
+  const topicNames = [t.title]
+
+  const existingTopicArns = [arn.sns('special-topic')]
+
+  policyMap.set(
+    queueName,
+    buildQueuePolicy({
+      queueArn: arn.sqs(queueName),
+      topicArnList: existingTopicArns,
+    }),
+  )
+
+  await fanout.subscribeQueueToTopics(credentials, topicNames, queueName)
+
+  t.deepEqual(eventLog, [
+    ['sqs.createQueue', { QueueName: queueName }],
+    [
+      'sqs.getQueueAttributes',
+      { QueueUrl: url(queueName), AttributeNames: ['QueueArn', 'Policy'] },
+    ],
+    ['sns.createTopic', { Name: topicNames[0] }],
+    [
+      'sqs.setQueueAttributes',
+      {
+        QueueUrl: url(queueName),
+        Attributes: {
+          Policy: buildQueuePolicy({
+            queueArn: arn.sqs(queueName),
+            topicArnList: [existingTopicArns[0], arn.sns(topicNames[0])],
           }),
         },
       },

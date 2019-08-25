@@ -30,7 +30,7 @@
     "url": "https://github.com/mishguruorg/aws-fanout/issues"
   },
   "devDependencies": {
-    "@mishguru/package": "^7.5.0",
+    "@mishguru/package": "^7.6.0",
     "sinon": "^7.4.1",
     "timekeeper": "2.2.0"
   },
