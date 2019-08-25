@@ -56,10 +56,12 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - setup
+      - setup:
+          context: shared
+          requires: []
       - lint:
-          requires:
-            - setup
+          context: shared
+          requires: [setup]
       - test:
-          requires:
-            - setup
+          context: shared
+          requires: [setup]
