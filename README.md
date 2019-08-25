@@ -30,35 +30,51 @@ await publish(credentials, 'send-email', {
 
 ## API Documentation
 
-- `deleteTopic`
-- `deleteQueue`
-- `deleteMessage`
-- `receiveMessage`
-- `registerTopics`
-- `registerQueues`
-- `subscribeQueuesToTopics`
-- `subscribeQueueTopicsByTheirPrefix`
-- `publish`
+- [`deleteTopic`](#deleteTopic)
+- [`deleteQueue`](#deleteQueue)
+- [`deleteMessage`](#deleteMessage)
+- [`receiveMessage`](#receiveMessage)
+- [`registerTopics`](#registerTopics)
+- [`registerQueues`](#registerQueues)
+- [`subscribeQueuesToTopics`](#subscribeQueuesToTopics)
+- [`subscribeQueueTopicsByTheirPrefix`](#subscribeQueueTopicsByTheirPrefix)
+- [`publish`](#publish)
 
-### `deleteTopic(credentials, topicName)`
+### `deleteTopic`
 
-### `deleteQueue(credentials, queueName)`
+(credentials, topicName)
 
-### `deleteMessage(credentials, queueName, receiptHandle)`
+### `deleteQueue`
 
-### `registerTopics(credentials, topicNames)`
+(credentials, queueName)
 
-### `registerQueues(credentials, queueNames)`
+### `deleteMessage`
 
-### `receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout, queueName)`
+(credentials, queueName, receiptHandle)
 
-### `subscribeQueuesToTopics(credentials, topicNames, queueName,
-deadLetterQueueName?, maxReceiveCount?)`
+### `registerTopics`
 
-### `subscribeQueueTopicsByTheirPrefix(credentials, topicNames, queueName,
-deadLetterQueueName?, maxReceiveCount?)`
+(credentials, topicNames)
 
-### `publish(credentials, topicName, message)
+### `registerQueues`
+
+(credentials, queueNames)
+
+### `receiveMessage`
+
+(credentials, maxNumberOfMessages, visibilityTimeout, queueName)
+
+### `subscribeQueuesToTopics`
+
+(credentials, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)
+
+### `subscribeQueueTopicsByTheirPrefix`
+
+(credentials, topicNames, queueName, deadLetterQueueName?, maxReceiveCount?)
+
+### `publish`
+
+(credentials, topicName, message)
 
 ### Credentials
 
