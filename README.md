@@ -32,11 +32,11 @@ await publish(credentials, 'send-email', {
 
 - [`createQueue(credentials, { queueName })`](#v2createQueue)
 - [`createTopic(credentials, { topicName })`](#v2createTopic)
-- [`deleteMessage(credentials, { queueName, receiptHandle })`](#v2deleteMessage)
 - [`deleteQueue(credentials, { queueName })`](#v2deleteQueue)
 - [`deleteTopic(credentials, { topicName })`](#v2deleteTopic)
 - [`publishMessage(credentials, { topicName, message })`](#v2publishMessage)
 - [`receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`](#v2receiveMessage)
+- [`deleteMessage(credentials, { queueName, receiptHandle })`](#v2deleteMessage)
 - [`setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`](#v2setQueuePolicy)
 - [`setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern })`](#v2setQueuePolicyWithPattern)
 - [`setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`](#v2setQueueRedrivePolicy)
@@ -72,34 +72,19 @@ await createTopic(credentials, {
 })
 ```
 
-### `v2.deleteMessage`
+### `v2.deleteQueue`
 
-Remove a message from a queue.
-
-After you have finished receiving a message from the queue, you should remove
-it so that it does not get sent again.
+Delete a queue.
 
 - `credentials`: [Credentials](#credentials)
-- `options.queueName`: name of the queue to delete the message from
-- `options.receiptHandle`: the receipt handle of the mesage to delete
+- `options.queueName`: name of the queue to delete
 
 ```typescript
-import { receiveMessage, deleteMessage } from 'aws-sdk'
+import { deleteQueue } from 'aws-sdk'
 
-const queueName = 'my-queue-name'
-
-const messages = await receiveMessage(credentials, {
-  maxNumberOfMessages: 1,
-  visibilityTimeout: 10,
-  queueName
+await deleteQueue(credentials, {
+  queueName: 'my-queue-name'
 })
-
-if (messages.length > 0) {
-  await deleteMessage(credentials, {
-    queueName,
-    receiptHandle: messages[0].ReceiptHandle
-  })
-}
 ```
 
 ### `v2.deleteTopic`
@@ -114,21 +99,6 @@ import { deleteTopic } from 'aws-sdk'
 
 await deleteTopic(credentials, {
   topicName: 'my-topic-name'
-})
-```
-
-### `v2.deleteQueue`
-
-Delete a queue.
-
-- `credentials`: [Credentials](#credentials)
-- `options.queueName`: name of the queue to delete
-
-```typescript
-import { deleteQueue } from 'aws-sdk'
-
-await deleteQueue(credentials, {
-  queueName: 'my-queue-name'
 })
 ```
 
@@ -172,6 +142,36 @@ const messages = await receiveMessage(
   visibilityTimeout: 15,
   queueName: 'actions'
 )
+```
+
+### `v2.deleteMessage`
+
+Remove a message from a queue.
+
+After you have finished receiving a message from the queue, you should remove
+it so that it does not get sent again.
+
+- `credentials`: [Credentials](#credentials)
+- `options.queueName`: name of the queue to delete the message from
+- `options.receiptHandle`: the receipt handle of the mesage to delete
+
+```typescript
+import { receiveMessage, deleteMessage } from 'aws-sdk'
+
+const queueName = 'my-queue-name'
+
+const messages = await receiveMessage(credentials, {
+  maxNumberOfMessages: 1,
+  visibilityTimeout: 10,
+  queueName
+})
+
+if (messages.length > 0) {
+  await deleteMessage(credentials, {
+    queueName,
+    receiptHandle: messages[0].ReceiptHandle
+  })
+}
 ```
 
 ### `v2.setQueuePolicy`
@@ -260,67 +260,33 @@ await subscribeQueueToTopic(credentials, {
 
 ## API v1 Documentation
 
-- [`deleteMessage(credentials, queueName, receiptHandle)`](#v1deleteMessage)
+- [`registerQueues(credentials, queueNames)`](#v1registerQueues)
+- [`registerTopics(credentials, topicNames)`](#v1registerTopics)
 - [`deleteQueue(credentials, queueName)`](#v1deleteQueue)
 - [`deleteTopic(credentials, topicName)`](#v1deleteTopic)
 - [`publish(credentials, topicName, message)`](#v1publish)
 - [`receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout, queueName)`](#v1receiveMessage)
-- [`registerQueues(credentials, queueNames)`](#v1registerQueues)
-- [`registerTopics(credentials, topicNames)`](#v1registerTopics)
+- [`deleteMessage(credentials, queueName, receiptHandle)`](#v1deleteMessage)
 - [`subscribeQueueTopicsByTheirPrefix(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5]`](#v1subscribeQueueTopicsByTheirPrefix)
 - [`subscribeQueuesToTopics(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5])`](#v1subscribeQueuesToTopics)
 
-### `v1.deleteTopic`
+### `v1.registerQueues`
 
-Delete a topic.
-
-- `credentials`: [Credentials](#credentials)
-- `topicName`: name of the topic to delete
-
-```typescript
-import { deleteTopic } from 'aws-sdk'
-
-const topicName = 'my-topic-name'
-
-await deleteTopic(credentials, topicName)
-```
-
-### `v1.deleteQueue`
-
-Delete a queue.
+Create multiple queues on SQS.
 
 - `credentials`: [Credentials](#credentials)
-- `queueName`: name of the queue to delete
+- `queueNames`: list of queues to create
 
 ```typescript
-import { deleteQueue } from 'aws-sdk'
+import { registerQueues } from 'aws-sdk'
 
-const queueName = 'my-queue-name'
+const queueNames = [
+  'logs',
+  'errors',
+  'actions',
+]
 
-await deleteQueue(credentials, queueName)
-```
-
-### `v1.deleteMessage`
-
-Remove a message from a queue.
-
-After you have finished receiving a message from the queue, you should remove
-it so that it does not get sent again.
-
-- `credentials`: [Credentials](#credentials)
-- `queueName`: name of the queue to delete the message from
-- `receiptHandle`: the receipt handle of the mesage to delete
-
-```typescript
-import { receiveMessage, deleteMessage } from 'aws-sdk'
-
-const queueName = 'my-queue-name'
-
-const messages = await receiveMessage(credentials, 1, 10, queueName)
-if (messages.length > 0) {
-  const receiptHandle = messages[0].ReceiptHandle
-  await deleteMessage(credentials, queueName, receiptHandle)
-}
+await registerQueues(credentials, queueNames)
 ```
 
 ### `v1.registerTopics`
@@ -343,23 +309,57 @@ const topicNames = [
 await registerTopics(credentials, topicNames)
 ```
 
-### `v1.registerQueues`
+### `v1.deleteQueue`
 
-Create multiple queues on SQS.
+Delete a queue.
 
 - `credentials`: [Credentials](#credentials)
-- `queueNames`: list of queues to create
+- `queueName`: name of the queue to delete
 
 ```typescript
-import { registerQueues } from 'aws-sdk'
+import { deleteQueue } from 'aws-sdk'
 
-const queueNames = [
-  'logs',
-  'errors',
-  'actions',
-]
+const queueName = 'my-queue-name'
 
-await registerQueues(credentials, queueNames)
+await deleteQueue(credentials, queueName)
+```
+
+### `v1.deleteTopic`
+
+Delete a topic.
+
+- `credentials`: [Credentials](#credentials)
+- `topicName`: name of the topic to delete
+
+```typescript
+import { deleteTopic } from 'aws-sdk'
+
+const topicName = 'my-topic-name'
+
+await deleteTopic(credentials, topicName)
+```
+
+### `v1.publish`
+
+Publish a message with a particular topic. Any queues that are subscribed to
+the topic will receive a copy of it.
+
+The message will be serialized using `JSON.stringify`.
+
+- `credentials`: [Credentials](#credentials)
+- `topicName`: name of the topic
+- `message`: message payload to send
+
+```typescript
+import { subscribeQueueTopicsByTheirPrefix } from 'aws-sdk'
+
+const topicName = 'create'
+const message = {
+  userId: 123,
+  email: 'john.smith@example.co.nz'
+}
+
+await publish(credentials, topicName, message)
 ```
 
 ### `v1.receiveMessage`
@@ -385,6 +385,29 @@ const messages = await receiveMessage(
   visibilityTimeout,
   queueName
 )
+```
+
+### `v1.deleteMessage`
+
+Remove a message from a queue.
+
+After you have finished receiving a message from the queue, you should remove
+it so that it does not get sent again.
+
+- `credentials`: [Credentials](#credentials)
+- `queueName`: name of the queue to delete the message from
+- `receiptHandle`: the receipt handle of the mesage to delete
+
+```typescript
+import { receiveMessage, deleteMessage } from 'aws-sdk'
+
+const queueName = 'my-queue-name'
+
+const messages = await receiveMessage(credentials, 1, 10, queueName)
+if (messages.length > 0) {
+  const receiptHandle = messages[0].ReceiptHandle
+  await deleteMessage(credentials, queueName, receiptHandle)
+}
 ```
 
 ### `v1.subscribeQueuesToTopics`
@@ -429,7 +452,6 @@ Instead you can define the queue to accept any topic that matches a wildcard.
 - `deadLetterQueueName`: (optional) The name of dead-letter queue to which SQS moves messages after the value of "maxReceiveCount" is exceeded. 
 - `maxReceiveCount`: (optional, default = 5) The number of times a message is delivered to the source queue before being moved to the dead-letter queue. When the ReceiveCount for a message exceeds the maxReceiveCount for a queue, SQS moves the message to the dead-letter-queue. 
 
-
 ```typescript
 import { subscribeQueueTopicsByTheirPrefix } from 'aws-sdk'
 
@@ -445,29 +467,6 @@ await subscribeQueueTopicsByTheirPrefix(
   deadLetterQueueName,
   maxReceiveCount
 )
-```
-
-### `v1.publish`
-
-Publish a message with a particular topic. Any queues that are subscribed to
-the topic will receive a copy of it.
-
-The message will be serialized using `JSON.stringify`.
-
-- `credentials`: [Credentials](#credentials)
-- `topicName`: name of the topic
-- `message`: message payload to send
-
-```typescript
-import { subscribeQueueTopicsByTheirPrefix } from 'aws-sdk'
-
-const topicName = 'create'
-const message = {
-  userId: 123,
-  email: 'john.smith@example.co.nz'
-}
-
-await publish(credentials, topicName, message)
 ```
 
 ## Credentials
