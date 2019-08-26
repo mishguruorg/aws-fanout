@@ -32,15 +32,13 @@ await publish(credentials, 'send-email', {
 
 - [`createQueue(credentials, { queueName })`](#v2createQueue)
 - [`createTopic(credentials, { topicName })`](#v2createTopic)
-- [`deleteMessage(credentials, { queueName, receiptHandle
-  })`](#v2deleteMessage)
+- [`deleteMessage(credentials, { queueName, receiptHandle })`](#v2deleteMessage)
 - [`deleteQueue(credentials, { queueName })`](#v2deleteQueue)
 - [`deleteTopic(credentials, { topicName })`](#v2deleteTopic)
 - [`publishMessage(credentials, { topicName, message })`](#v2publishMessage)
 - [`receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`](#v2receiveMessage)
 - [`setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`](#v2setQueuePolicy)
-- [`setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern
-  })`](#v2setQueuePolicyWithPattern)
+- [`setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern })`](#v2setQueuePolicyWithPattern)
 - [`setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`](#v2setQueueRedrivePolicy)
 - [`subscribeQueueToTopic(credentials, { queueName, topicName })`](#v2subscribeQueueToTopic)
 
