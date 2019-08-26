@@ -30,17 +30,19 @@ await publish(credentials, 'send-email', {
 
 ## API v2 Documentation
 
-- `createQueue(credentials, { queueName })`
-- `createTopic(credentials, { topicName })`
-- `deleteMessage(credentials, { queueName, receiptHandle })`
-- `deleteQueue(credentials, { queueName })`
-- `deleteTopic(credentials, { topicName })`
-- `publishMessage(credentials, { topicName, message })`
-- `receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`
-- `setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`
-- `setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern })`
-- `setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`
-- `subscribeQueueToTopic(credentials, { queueName, topicName })`
+- [`createQueue(credentials, { queueName })`](#v2createQueue)
+- [`createTopic(credentials, { topicName })`](#v2createTopic)
+- [`deleteMessage(credentials, { queueName, receiptHandle
+  })`](#v2deleteMessage)
+- [`deleteQueue(credentials, { queueName })`](#v2deleteQueue)
+- [`deleteTopic(credentials, { topicName })`](#v2deleteTopic)
+- [`publishMessage(credentials, { topicName, message })`](#v2publishMessage)
+- [`receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`](#v2receiveMessage)
+- [`setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`](#v2setQueuePolicy)
+- [`setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern
+  })`](#v2setQueuePolicyWithPattern)
+- [`setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`](#v2setQueueRedrivePolicy)
+- [`subscribeQueueToTopic(credentials, { queueName, topicName })`](#v2subscribeQueueToTopic)
 
 ### `v2.createQueue`
 
@@ -238,15 +240,15 @@ await setQueueRedrivePolicy(credentials, {
 
 ## API v1 Documentation
 
-- [`deleteMessage(credentials, queueName, receiptHandle)`](#v1-deleteMessage)
-- [`deleteQueue(credentials, queueName)`](#v1-deleteQueue)
-- [`deleteTopic(credentials, topicName)`](#v1-deleteTopic)
-- [`publish(credentials, topicName, message)`](#v1-publish)
-- [`receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout, queueName)`](#v1-receiveMessage)
-- [`registerQueues(credentials, queueNames)`](#v1-registerQueues)
-- [`registerTopics(credentials, topicNames)`](#v1-registerTopics)
-- [`subscribeQueueTopicsByTheirPrefix(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5]`](#v1-subscribeQueueTopicsByTheirPrefix)
-- [`subscribeQueuesToTopics(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5])`](#v1-subscribeQueuesToTopics)
+- [`deleteMessage(credentials, queueName, receiptHandle)`](#v1deleteMessage)
+- [`deleteQueue(credentials, queueName)`](#v1deleteQueue)
+- [`deleteTopic(credentials, topicName)`](#v1deleteTopic)
+- [`publish(credentials, topicName, message)`](#v1publish)
+- [`receiveMessage(credentials, maxNumberOfMessages, visibilityTimeout, queueName)`](#v1receiveMessage)
+- [`registerQueues(credentials, queueNames)`](#v1registerQueues)
+- [`registerTopics(credentials, topicNames)`](#v1registerTopics)
+- [`subscribeQueueTopicsByTheirPrefix(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5]`](#v1subscribeQueueTopicsByTheirPrefix)
+- [`subscribeQueuesToTopics(credentials, topicNames, queueName, [deadLetterQueueName], [maxReceiveCount=5])`](#v1subscribeQueuesToTopics)
 
 ### `v1.deleteTopic`
 
