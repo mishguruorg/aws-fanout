@@ -54,6 +54,7 @@ test.beforeEach((t) => {
   stu.flush('../../sdk/withCredentials')
   stu.flush('../../sdk/index')
   stu.flush('../../v1')
+  stu.flush('../../v2')
 
   const { eventLog, policyMap } = stu.mock('aws-sdk', mockAws)
   const fanout = stu.test('../../index')
