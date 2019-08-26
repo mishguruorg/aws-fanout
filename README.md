@@ -201,7 +201,10 @@ await subscribeQueuesToTopics(credentials, {
 If you have a large number of topics to create, you may start hitting the
 AWS limit on how large the queue policy can be.
 
-Instead you can define the queue to accept any topic that matches a wildcard.
+Instead you can define the queue to accept any topic that matches a wildcard
+pattern.
+
+Note: any existing policies will be ignore.
 
 - `credentials`: [Credentials](#credentials)
 - `options.queueName`: queue to forward topics to
@@ -233,6 +236,25 @@ await setQueueRedrivePolicy(credentials, {
   queueName: 'actions',
   deadLetterQueueName: 'deadLetter',
   maxReceiveCount: 5
+})
+```
+
+### `v2.subscribeQueueToTopic`
+
+Subscribe a queue to a topic.
+
+When the topic is published, a copy of it will be sent to the queue.
+
+- `credentials`: [Credentials](#credentials)
+- `options.queueName`: name of the queue
+- `options.topicName`: name of the topic
+
+```typescript
+import { subscribeQueueToTopic } from 'aws-sdk'
+
+await subscribeQueueToTopic(credentials, {
+  queueName: 'actions',
+  topicName: 'create'
 })
 ```
 
