@@ -28,6 +28,17 @@ await publish(credentials, 'send-email', {
 })
 ```
 
+## Environment Variables
+
+### `AWS_FANOUT_RATE_LIMIT_MS`
+
+**Default value: `10`**
+
+The API calls to SQS/SNS are rate limited.
+
+By default there is a maximum of request made per 10ms. This results in a
+maximum of 100 requests per second.
+
 ## API v2 Documentation
 
 - [`createQueue(credentials, { queueName })`](#v2createQueue)
