@@ -122,7 +122,16 @@ const setQueuePolicy = async (
   const { queueArn, queuePolicy } = await sdk.getQueueAttributes(sqs, queueUrl)
 
   let topicArnList = await Promise.all(
-    topicNames.map((topicName) => sdk.createTopic(sns, topicName)),
+    topicNames.map(async (topicName) => {
+      if (topicName.includes('*')) {
+        const arnId = queueArn.match(/^arn:aws:sqs:([^:]*:[^:]*):/)[1]
+        const topicArnPattern = `arn:aws:sns:${arnId}:${topicName}`
+        return topicArnPattern
+      }
+
+      const topicArn = await sdk.createTopic(sns, topicName)
+      return topicArn
+    }),
   )
 
   if (ignoreExistingPolicy !== true) {
@@ -141,27 +150,6 @@ const setQueuePolicy = async (
 interface SetQueuePolicyWithPatternOptions {
   queueName: string,
   topicNamePattern: string,
-}
-
-const setQueuePolicyWithPattern = async (
-  credentials: Credentials,
-  options: SetQueuePolicyWithPatternOptions,
-) => {
-  const { queueName, topicNamePattern } = options
-  const { sqs } = sdk.withCredentials(credentials)
-
-  const queueUrl = await sdk.createQueue(sqs, queueName)
-  const { queueArn } = await sdk.getQueueAttributes(sqs, queueUrl)
-
-  const arnId = queueArn.match(/^arn:aws:sqs:([^:]*:[^:]*):/)[1]
-  const topicArnPattern = `arn:aws:sns:${arnId}:${topicNamePattern}`
-
-  await sdk.setQueueAttributes(sqs, queueUrl, {
-    Policy: buildQueuePolicy({
-      queueArn,
-      topicArnList: [topicArnPattern],
-    }),
-  })
 }
 
 interface SetQueueRedrivePolicyOptions {
@@ -218,7 +206,6 @@ export {
   publishMessage,
   receiveMessage,
   setQueuePolicy,
-  setQueuePolicyWithPattern,
   setQueueRedrivePolicy,
   subscribeQueueToTopic,
 }

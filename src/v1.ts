@@ -82,9 +82,10 @@ const subscribeQueueTopicsByTheirPrefix = async (
 ) => {
   const topicNamePattern = commonPrefix(topicNames) + '*'
 
-  await v2.setQueuePolicyWithPattern(credentials, {
+  await v2.setQueuePolicy(credentials, {
     queueName,
-    topicNamePattern,
+    topicNames: [topicNamePattern],
+    ignoreExistingPolicy: false,
   })
 
   if (deadLetterQueueName != null) {

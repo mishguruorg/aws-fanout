@@ -49,7 +49,6 @@ maximum of 100 requests per second.
 - [`receiveMessage(credentials, { queueName, maxNumberOfMessages, visibilityTimeout })`](#v2receiveMessage)
 - [`deleteMessage(credentials, { queueName, receiptHandle })`](#v2deleteMessage)
 - [`setQueuePolicy(credentials, { queueName, topicNames, ignoreExistingPolicy })`](#v2setQueuePolicy)
-- [`setQueuePolicyWithPattern(credentials, { queueName, topicNamePattern })`](#v2setQueuePolicyWithPattern)
 - [`setQueueRedrivePolicy(credentials, { queueName, deadLetterQueueName, maxReceiveCount })`](#v2setQueueRedrivePolicy)
 - [`subscribeQueueToTopic(credentials, { queueName, topicName })`](#v2subscribeQueueToTopic)
 
@@ -207,26 +206,17 @@ await subscribeQueuesToTopics(credentials, {
 })
 ```
 
-### `v2.setQueuePolicyWithPattern`
-
-If you have a large number of topics to create, you may start hitting the
-AWS limit on how large the queue policy can be.
-
-Instead you can define the queue to accept any topic that matches a wildcard
-pattern.
-
-Note: any existing policies will be ignore.
-
-- `credentials`: [Credentials](#credentials)
-- `options.queueName`: queue to forward topics to
-- `options.topicNamePattern`: list of topics to subscribe to
+If you have a large number of topics to create, you may start hitting the AWS
+limit on how large the queue policy can be.  Instead you can define the queue
+to accept any topic that matches a wildcard pattern.
 
 ```typescript
-import { setQueuePolicyWithPattern } from 'aws-sdk'
+import { subscribeQueuesToTopics } from 'aws-sdk'
 
-await setQueuePolicyWithPattern(credentials, {
-  queueName: 'actions',
-  topicNamePattern: '*'
+await subscribeQueuesToTopics(credentials, {
+  queueName: 'logger',
+  topicNames: ['*'],
+  ignoreExistingPolicy: false
 })
 ```
 
